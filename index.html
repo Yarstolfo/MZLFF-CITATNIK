@@ -222,7 +222,7 @@
                 animation: splash .55s .57s ease-out both;
             }
 
-            .quote-card.dropping .quote-text, .quote-card.dropping .track .album {
+            .quote-card.dropping .quote-text, .quote-card.dropping .quote-text, .quote-card.dropping .track, .quote-card.dropping .album {
                 animation: reveal .55s .82s cubic-bezier(.2,.7,.2,1) both;
             }
 
@@ -1808,48 +1808,8 @@
         void card.offsetWidth;
         card.classList.add('dropping');
     });
-</script>
-
-
-        // ==========================================
-        // ТЕКСТ ЦИТАТЫ
-        // ==========================================
-
-        quoteText.textContent = `«${quote.text}»`;
-        trackName.textContent = quote.track;
-        albumName.textContent = quote.album;
-
-
-        // ==========================================
-        // ССЫЛКА НА АЛЬБОМ
-        // ==========================================
-
-        // Например:
-        //
-        // quote.album
-        //     ↓
-        // "svetlayastorona"
-        //
-        // albums[quote.album]
-        //     ↓
-        // "https://music.thefence.me/svetlayastorona"
-
-        listenLink.href = albums[quote.album] || '#';
-
-
-        // ==========================================
-        // ПОКАЗ КАРТОЧКИ
-        // ==========================================
-
-        card.hidden = false;
-
-        card.classList.remove('dropping');
-
-        // Перезапускаем CSS-анимацию
-        void card.offsetWidth;
-
-        card.classList.add('dropping');
-    });
-</script>
+    </script>  
+    
+    
     </body>
 </html>
