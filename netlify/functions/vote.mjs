@@ -64,6 +64,15 @@ export default async (req, context) => {
   const url = new URL(req.url);
 
   if (req.method === "GET") {
+    // итоги конкретного прошедшего дня (для достижений)
+    const rd = url.searchParams.get("result");
+    if (rd) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(rd) || rd >= today || rd < dayKey(-30)) {
+        return json({ error: "bad day" }, 400);
+      }
+      return json({ day: rd, top: await finalTop(store, rd) });
+    }
+
     const cid = url.searchParams.get("cid") || "";
     let voted = null;
     if (/^[a-zA-Z0-9-]{8,64}$/.test(cid)) {
