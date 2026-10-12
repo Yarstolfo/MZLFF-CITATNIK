@@ -1,2275 +1,304 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080a09">
-<title>Цитатник Илюхи Мазеллова</title>
-<style>
-:root {
-    color-scheme: dark;
-    --ink: #080a09;
-    --paper: #f3f4ef;
-    --muted: #858585;
-    --mint: #ffffff;
-    --acid: #ffffff;
-}
-* { box-sizing: border-box; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a09">
+  <title>Переезд на новый сайт — mzlff цитаты</title>
+  <style>
+    /* ── стиль в духе исходного сайта ── */
+    :root {
+      color-scheme: dark;
+      --ink: #080a09;
+      --paper: #f3f4ef;
+      --muted: #858585;
+      --acid: #ffffff;
+      --purple: #b98cff;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100svh;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Arial", "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+    /* точечный фон, как на оригинале */
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      content: "";
+      opacity: .18;
+      background-image: radial-gradient(#ffffff 0.65px, transparent 0.65px);
+      background-size: 7px 7px;
+      mask-image: linear-gradient(115deg, transparent 8%, #000 60%, transparent 98%);
+    }
+    .redirect-card {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      width: 100%;
+      padding: 48px 40px 52px;
+      border: 1px solid #ffffff24;
+      background: #111412e8;
+      backdrop-filter: blur(2px);
+      text-align: center;
+      animation: card-in 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(-10px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
-body {
-    min-height: 100svh;
-    margin: 0;
-    overflow-x: hidden;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: "Arial", "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-}
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--paper);
+    }
+    .brand-mark {
+      width: 10px;
+      height: 10px;
+      background: var(--acid);
+      flex: 0 0 auto;
+    }
 
-body::before {
-    position: fixed;
-    z-index: 0;
-    inset: 0;
-    pointer-events: none;
-    content: "";
-    opacity: .18;
-    background-image: radial-gradient(#ffffff 0.65px, transparent 0.65px);
-    background-size: 7px 7px;
-    mask-image: linear-gradient(115deg, transparent 8%, #000 60%, transparent 98%);
-}
+    .title {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: 1.18;
+      margin-bottom: 16px;
+    }
+    .title .accent {
+      color: var(--purple);
+    }
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #adb2ae;
+      font-weight: 600;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
 
-.page {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    min-height: 100svh;
-    flex-direction: column;
-    width: min(100% - 48px, 1280px);
-    margin: auto;
-}
+    .domain-badge {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px solid #b98cff70;
+      background: #1a1428;
+      color: #d9c2ff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      word-break: break-all;
+      margin-bottom: 28px;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .domain-badge:hover {
+      border-color: #b98cff;
+      background: #1f1830;
+    }
 
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 30px 0;
-    border-bottom: 1px solid #ffffff20;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand-mark { width: 10px; height: 10px; background: var(--acid); }
+    .redirect-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      min-height: 58px;
+      padding: 0 32px;
+      border: 0;
+      background: var(--acid);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .2s ease, background .2s ease;
+      margin-bottom: 18px;
+    }
+    .redirect-btn:hover {
+      transform: translateY(-3px);
+      background: #d9d9d9;
+    }
+    .redirect-btn .arrow {
+      display: inline-flex;
+      width: 16px;
+      height: 16px;
+    }
+    .redirect-btn .arrow svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
-/* ── Достижения ── */
-.achievements-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-bottom: 1px solid #ffffff14;
-    background: #0b0d0c;
-}
-.achievements-bar .ach-title {
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    margin-right: 4px;
-}
-.ach-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
-    border: 1px solid #ffffff24;
-    background: #111412;
-    color: #6d736f;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    cursor: default;
-    transition: border-color .2s ease, color .2s ease, background .2s ease;
-}
-.ach-badge.unlocked {
-    border-color: #b98cff70;
-    background: #1a1428;
-    color: #d9c2ff;
-}
-.ach-badge .ach-icon {
-    width: 10px;
-    height: 10px;
-    flex: 0 0 auto;
-}
-.ach-badge.unlocked .ach-icon { color: #b98cff; }
-.ach-badge.locked .ach-icon { color: #ffffff30; }
+    .timer-note {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .timer-note .seconds {
+      color: var(--paper);
+      font-variant-numeric: tabular-nums;
+    }
 
-/* ── Тост достижения ── */
-.ach-toast {
-    position: fixed;
-    left: 50%;
-    bottom: 28px;
-    z-index: 90;
-    transform: translate(-50%, 20px);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: min(92vw, 420px);
-    padding: 12px 16px;
-    border: 1px solid #b98cff70;
-    background: #14101e;
-    color: var(--paper);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .35s ease, transform .35s ease;
-}
-.ach-toast.show {
-    opacity: 1;
-    transform: translate(-50%, 0);
-}
-.ach-toast .ach-toast-icon {
-    flex: 0 0 auto;
-    width: 26px;
-    height: 26px;
-    color: #b98cff;
-}
-.ach-toast .ach-toast-text { min-width: 0; }
-.ach-toast .ach-toast-label {
-    display: block;
-    color: #b98cff;
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-}
-.ach-toast .ach-toast-name {
-    display: block;
-    margin-top: 2px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: -.01em;
-}
-.ach-toast .ach-toast-desc {
-    display: block;
-    margin-top: 2px;
-    color: #adb2ae;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .04em;
-}
+    .legacy-note {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid #ffffff14;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #5c6360;
+      line-height: 1.8;
+    }
+    .legacy-note strong {
+      color: #858585;
+      font-weight: 800;
+    }
 
-.catalog-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border: 1px solid #ffffff40;
-    background: transparent;
-    color: var(--paper);
-    cursor: pointer;
-    font: inherit;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    transition: background .2s ease, color .2s ease;
-}
-.catalog-btn:hover { background: var(--paper); color: var(--ink); }
-
-main {
-    display: grid;
-    flex: 1;
-    align-content: center;
-    justify-items: center;
-    padding: 80px 0 100px;
-    text-align: center;
-}
-
-button {
-    display: inline-flex;
-    min-height: 58px;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 38px;
-    padding: 0 24px;
-    border: 0;
-    background: var(--acid);
-    color: var(--ink);
-    cursor: pointer;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: .11em;
-    text-transform: uppercase;
-    transition: transform .2s ease, background .2s ease;
-}
-button:hover { transform: translateY(-3px); background: #d9d9d9; }
-button:focus-visible { outline: 2px solid var(--paper); outline-offset: 5px; }
-button .arrow { display: inline-flex; width: 16px; height: 16px; }
-button .arrow svg { display: block; width: 100%; height: 100%; }
-
-.quote-card {
-    position: relative;
-    width: min(100%, 760px);
-    min-height: 180px;
-    margin-top: 56px;
-    padding: 34px 34px 30px;
-    border: 1px solid #ffffff24;
-    background: #111412e8;
-    animation: card-in .9s ease both;
-}
-.quote-card::before {
-    position: absolute;
-    top: -36px;
-    left: 50%;
-    z-index: 1;
-    width: 25px;
-    height: 34px;
-    clip-path: path("M 12.5 0 C 9 7, 1 18, 1 23 C 1 30, 6 34, 12.5 34 C 19 34, 24 30, 24 23 C 24 18, 16 7, 12.5 0 Z");
-    background: var(--paper);
-    content: "";
-    opacity: 0;
-    transform: translate(-50%, -20px) scale(.65,.8);
-    pointer-events: none;
-}
-.quote-card::after {
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    width: 150px;
-    height: 48px;
-    background: radial-gradient(circle at 13% 28%, #fff 0 2px, transparent 3px), radial-gradient(circle at 87% 25%, #fff 0 2px, transparent 3px), radial-gradient(circle at 28% 9%, #fff 0 1.5px, transparent 2.5px), radial-gradient(circle at 72% 7%, #fff 0 1.5px, transparent 2.5px), radial-gradient(ellipse at center, transparent 27%, #fff 29% 31%, transparent 33% 52%, #fff 54% 56%, transparent 58% 76%, #fff 78% 80%, transparent 82%);
-    content: "";
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(.15, .35);
-    pointer-events: none;
-}
-.quote-card.dropping::before { animation: drop-in .72s cubic-bezier(.2,.7,.25,1) both; }
-.quote-card.dropping::after  { animation: splash .55s .57s ease-out both; }
-.quote-card.dropping .quote-text,
-.quote-card.dropping .track,
-.quote-card.dropping .album  { animation: reveal .55s .82s cubic-bezier(.2,.7,.2,1) both; }
-.quote-card.dropping .listen-link { animation: reveal .55s 1s cubic-bezier(.2,.7,.2,1) both; }
-.quote-card[hidden] { display: none; }
-
-.quote-text {
-    margin: 0 auto;
-    font-size: clamp(22px, 4.2vw, 38px);
-    font-weight: 800;
-    letter-spacing: -.045em;
-    line-height: 1.23;
-}
-.track {
-    margin: 14px 0 0;
-    color: var(--mint);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-}
-.track[hidden] { display: none; margin: 0; }
-
-.album {
-    margin: 6px 0 0;
-    color: var(--mint);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-}
-.album[hidden] { display: none; margin: 0; }
-
-.secret-mark {
-    margin: 10px 0 0;
-    color: #b98cff;
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-}
-.secret-mark[hidden] { display: none; }
-
-.listen-link {
-    display: inline-flex;
-    min-height: 42px;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 24px;
-    padding: 0 16px;
-    border: 1px solid #ffffff70;
-    color: var(--paper);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .13em;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: background .2s ease, color .2s ease;
-}
-.listen-link:hover { background: var(--paper); color: var(--ink); }
-.listen-link svg { width: 13px; height: 13px; }
-
-.card-cover {
-    display: block;
-    width: 104px;
-    height: 104px;
-    margin: 26px auto 0;
-    object-fit: cover;
-    border: 1px solid #ffffff24;
-    background: #1a1d1b;
-}
-.card-cover[hidden] { display: none; }
-.quote-card.dropping .card-cover { animation: reveal .55s .82s cubic-bezier(.2,.7,.2,1) both; }
-.quote-card.dropping .feats { animation: reveal .55s .82s cubic-bezier(.2,.7,.2,1) both; }
-
-.feats {
-    margin: 8px 0 0;
-    color: #adb2ae;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-}
-.feats[hidden] { display: none; margin: 0; }
-.feats b { color: var(--paper); }
-.badge {
-    display: inline-block;
-    margin-right: 6px;
-    padding: 2px 6px;
-    border: 1px solid #ffffff50;
-    color: var(--paper);
-    font-size: 9px;
-    letter-spacing: .14em;
-}
-
-.counter {
-    margin-top: 18px;
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-.counter strong { color: var(--paper); }
-.counter.limit  { color: #ff6b6b; }
-
-.reset-timer {
-    margin-top: 6px;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-.reset-timer strong {
-    color: var(--paper);
-    font-variant-numeric: tabular-nums;
-}
-
-.modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: #000000cc;
-    backdrop-filter: blur(4px);
-    animation: fade-in .2s ease both;
-}
-.modal[hidden] { display: none; }
-.modal-box {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: min(100%, 860px);
-    max-height: 88svh;
-    border: 1px solid #ffffff30;
-    background: #0e100f;
-}
-
-.cat-text-wrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-
-.cat-note {
-    display: inline-block;
-    margin-top: 4px;
-    color: #b98cff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .04em;
-    line-height: 1.4;
-    text-transform: none;
-    font-style: italic;
-}
-
-#quote-button:disabled {
-    opacity: .4;
-    cursor: not-allowed;
-    transform: none;
-}
-#quote-button:disabled:hover {
-    background: var(--acid);
-    transform: none;
-}
-
-.modal-search {
-    position: relative;
-    padding: 8px 44px 8px 12px;
-}
-.modal-search input {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid #ffffff30;
-    background: #080a09;
-    color: var(--paper);
-    font: inherit;
-    font-size: 13px;
-    outline: none;
-}
-.modal-search input:focus { border-color: #ffffff70; }
-
-.modal-close {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    z-index: 5;
-    width: 30px;
-    height: 30px;
-    min-height: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ffffff30;
-    background: #0e100f;
-    color: var(--paper);
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-}
-.modal-close:hover { background: var(--paper); color: var(--ink); }
-
-.modal-body {
-    overflow-y: auto;
-    padding: 4px 12px 14px;
-}
-
-.album-card {
-    margin-bottom: 6px;
-    border: 1px solid #ffffff14;
-    background: #111412c0;
-    transition: border-color .2s ease;
-}
-.album-card.open { border-color: #ffffff35; }
-
-.album-card-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 8px 10px;
-    border: 0;
-    background: transparent;
-    color: var(--paper);
-    cursor: pointer;
-    font: inherit;
-    text-align: left;
-    transition: background .2s ease;
-    min-height: 0;
-    margin: 0;
-    text-transform: none;
-    letter-spacing: normal;
-    line-height: normal;
-}
-.album-card-head:hover { background: #ffffff0a; }
-.album-card-head:focus-visible { outline: 2px solid var(--paper); outline-offset: -2px; }
-
-.album-cover-wrap {
-    flex: 0 0 auto;
-    width: 36px;
-    height: 36px;
-    border: 1px solid #ffffff1a;
-    background: #1a1d1b;
-    overflow: hidden;
-}
-.album-cover-wrap img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.album-cover-wrap.ph {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff40;
-    font-size: 14px;
-}
-
-.album-info { flex: 1; min-width: 0; }
-.album-title {
-    margin: 0;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.album-stats {
-    margin: 2px 0 0;
-    color: var(--muted);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-}
-.album-stats b { color: var(--paper); }
-
-.album-chevron {
-    flex: 0 0 auto;
-    width: 14px;
-    height: 14px;
-    color: var(--muted);
-    transition: transform .25s ease, color .2s ease;
-}
-.album-card.open .album-chevron {
-    transform: rotate(180deg);
-    color: var(--paper);
-}
-
-.album-tracks {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height .35s ease;
-}
-.album-card.open .album-tracks {
-    max-height: 4000px;
-}
-
-.track-group { padding: 8px 12px 4px; }
-.track-group + .track-group { border-top: 1px solid #ffffff0d; }
-
-.track-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 0 6px;
-}
-.track-cover {
-    flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
-    object-fit: cover;
-    border: 1px solid #ffffff1a;
-    background: #1a1d1b;
-}
-.track-cover.ph {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff40;
-    font-size: 12px;
-}
-.track-head-info { min-width: 0; }
-.track-title {
-    margin: 0;
-    color: var(--mint);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-.track-feats {
-    margin: 2px 0 0;
-    color: #adb2ae;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-}
-.track-feats b { color: var(--paper); }
-.track-feats .badge {
-    display: inline-block;
-    margin-right: 4px;
-    padding: 1px 5px;
-    border: 1px solid #ffffff50;
-    color: var(--paper);
-    font-size: 8px;
-    letter-spacing: .12em;
-}
-
-.cat-item {
-    display: flex;
-    gap: 10px;
-    padding: 6px 0;
-    color: #c9ccc8;
-    font-size: 13px;
-    line-height: 1.5;
-}
-.cat-item .dot {
-    flex: 0 0 auto;
-    width: 6px;
-    height: 6px;
-    margin-top: 8px;
-    background: #ffffff40;
-}
-.cat-item.seen .dot { background: #4caf50; }
-.cat-item.seen { color: #6d736f; }
-
-.cat-item.locked .cat-body {
-    position: relative;
-    user-select: none;
-    flex: 1;
-    min-width: 0;
-}
-.cat-item.locked .cat-text {
-    filter: blur(4px);
-    opacity: .55;
-}
-.cat-item.locked .cat-mask {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background: linear-gradient(90deg, #0e100f 0%, #0e100fee 35%, #0e100fee 65%, #0e100f 100%);
-    color: var(--muted);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    pointer-events: none;
-}
-.cat-item.locked .cat-mask svg { width: 10px; height: 10px; }
-
-@keyframes card-in {
-    from { opacity: 0; transform: translateY(-8px) scale(.985); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes drop-in {
-    0%   { opacity: 0; transform: translate(-50%, -34px) scale(.65,.8); }
-    12%  { opacity: 1; }
-    70%  { opacity: 1; transform: translate(-50%, 44px) scale(.9,1.15); }
-    82%  { opacity: 1; transform: translate(-50%, 35px) scale(1.1,.8); }
-    100% { opacity: 0; transform: translate(-50%, 40px) scale(1.1,.8); }
-}
-@keyframes splash {
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(.15, .35); }
-    14%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(1, 1); }
-}
-@keyframes reveal {
-    from { opacity: 0; transform: translateY(14px); filter: blur(5px); }
-    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-@keyframes fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-@media (max-width: 560px) {
-    .page { width: min(100% - 32px, 1280px); }
-    header { padding: 22px 0; font-size: 10px; }
-    main   { padding: 66px 0 76px; }
-    .quote-card { min-height: 0; padding: 28px 20px 25px; margin-top: 42px; }
-    .modal { padding: 12px; }
-    .modal-body { padding: 4px 10px 12px; }
-    .track-group { padding: 8px 10px 4px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        scroll-behavior: auto !important;
+    @media (max-width: 560px) {
+      .redirect-card {
+        padding: 36px 22px 40px;
+      }
+      .domain-badge {
+        font-size: 12px;
+        padding: 10px 16px;
+      }
+      .redirect-btn {
+        min-height: 52px;
+        padding: 0 22px;
+        font-size: 11px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
         animation-duration: .01ms !important;
         transition-duration: .01ms !important;
+      }
     }
-}
-</style>
+  </style>
 </head>
 <body>
-<div class="page">
-    <header>
-        <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span>mzlff</span>
-        </div>
-        <button class="catalog-btn" id="catalog-button" type="button">
-            Каталог цитат
-        </button>
-    </header>
-    <main>
-        <button id="quote-button" type="button" aria-controls="quote-card">
-            <span>Моя цитата</span>
-            <span class="arrow" aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M4 12 12 4M5 4h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
-                </svg>
-            </span>
-        </button>
-        <p class="counter" id="counter"></p>
-        <p class="reset-timer" id="reset-timer"></p>
-        <section class="quote-card" id="quote-card" aria-live="polite" aria-atomic="true" hidden>
-            <p class="quote-text" id="quote-text"></p>
-            <img class="card-cover" id="cover-img" alt="" hidden referrerpolicy="no-referrer">
-            <p class="track" id="track-name"></p>
-            <p class="feats" id="feats" hidden></p>
-            <p class="album" id="album-name"></p>
-            <p class="secret-mark" id="secret-mark" hidden></p>
-            <a class="listen-link" id="listen-link" href="#" target="_blank" rel="noopener noreferrer">
-                <span>Слушать</span>
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M4 12 12 4M5 4h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
-                </svg>
-            </a>
-        </section>
-    </main>
-</div>
-
-<div class="modal" id="catalog-modal" hidden>
-    <div class="modal-box" role="dialog" aria-modal="true" aria-label="Каталог цитат">
-        <div class="modal-search">
-            <input type="search" id="catalog-search" placeholder="Поиск по цитате, треку или альбому…" autocomplete="off">
-            <button class="modal-close" id="catalog-close" type="button" aria-label="Закрыть">✕</button>
-        </div>
-        <div class="modal-body" id="catalog-body"></div>
+  <div class="redirect-card">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>mzlff</span>
     </div>
-</div>
 
-<script>
-
-// ==========================================
-// ДОСТИЖЕНИЯ
-// ==========================================
-const achievements = {
-    svetlayastorona: { name: 'Ты на светлой стороне!',       desc: 'Закрыл все цитаты альбома «Светлая сторона»' },
-    PHANTASMAGORIA:  { name: 'Добро пожаловать в парк!',     desc: 'Закрыл все цитаты альбома «PHANTASMAGORIA»' },
-    ADHD:            { name: 'СДВГшник',                     desc: 'Закрыл все цитаты альбома «ADHD»' },
-    HOLOD:           { name: 'Что-то тут какие-то холода ветра', desc: 'Закрыл все цитаты альбома «Холода ветра»' },
-    MAYAK:           { name: 'Который нашёл маяк',           desc: 'Закрыл все цитаты альбома «К маяку вселенной»' },
-    POTERYAN:        { name: 'Мир потеряли, но ты его нашёл', desc: 'Закрыл все цитаты альбома «Потерянный мир»' },
-    COSMOC:          { name: 'Нашли формулу нового',          desc: 'Закрыл все цитаты альбома «Космоцветок»' },
-    AKUST:           { name: 'Твой акустический',             desc: 'Закрыл все цитаты альбома «Мой Акустический»' },
-    anemone:         { name: 'Ветреница',                     desc: 'Закрыл все цитаты альбома «anemone»' },
-    nichego:         { name: 'Что-то новое',                  desc: 'Закрыл все цитаты альбома «Ничего плохого»' },
-    secret:          { name: 'Копатель',                      desc: 'Нашёл все цитаты вне дискографии' },
-};
-
-const LS_ACH = 'mzlff:achievements';
-
-function loadAchievements() {
-    try {
-        const raw = JSON.parse(localStorage.getItem(LS_ACH) || 'null');
-        if (raw && typeof raw === 'object') return raw;
-    } catch (e) {}
-    return {};
-}
-function saveAchievements(s) {
-    try { localStorage.setItem(LS_ACH, JSON.stringify(s)); } catch (e) {}
-}
-
-let unlockedAchievements = loadAchievements();
-
-// ==========================================
-// АЛЬБОМЫ
-// ==========================================
-const albums = {
-    svetlayastorona: { title: 'Светлая сторона',    url: 'https://music.yandex.ru/album/33464680' },
-    ADHD:            { title: 'ADHD',               url: 'https://music.yandex.ru/album/36250885' },
-    PHANTASMAGORIA:  { title: 'PHANTASMAGORIA',     url: 'https://music.yandex.ru/album/38179605' },
-    HOLOD:           { title: 'Холода ветра',       url: 'https://music.yandex.ru/album/27811378' },
-    POTERYAN:        { title: 'Потерянный мир',     url: 'https://music.yandex.ru/album/41563184' },
-    MAYAK:           { title: 'К маяку вселенной',  url: 'https://music.yandex.ru/album/27960799' },
-    anemone:         { title: 'anemone',            url: 'https://music.yandex.ru/album/25597535' },
-    COSMOC:          { title: 'Космоцветок',        url: 'https://music.yandex.ru/album/13012398' },
-    AKUST:           { title: 'Мой Акустический',   url: 'https://vk.ru/music/playlist/265934795_40' },
-    nichego:         { title: 'Ничего плохого',     url: 'https://music.yandex.ru/album/8891227' },
-    singl_140bpm:    { title: '', url: 'https://music.yandex.ru/album/29381529' },
-    singl_atm3:      { title: '', url: 'https://music.yandex.ru/album/21217143' },
-    singl_atm4:      { title: '', url: 'https://music.yandex.ru/album/43756211' },
-    singl_autoban:   { title: '', url: 'https://music.yandex.ru/album/23984861' },
-    singl_fluv:      { title: '', url: 'https://music.yandex.ru/album/39947684' },
-    singl_rolls:     { title: '', url: 'https://music.yandex.ru/album/34678192' },
-    singl_tru3:      { title: '', url: 'https://www.youtube.com/watch?v=16GL9LNSY5U' },
-    singl_catharsis: { title: '', url: 'https://music.yandex.ru/album/30814314' },
-    singl_bumazhny:  { title: '', url: 'https://music.yandex.ru/album/20034432' },
-    singl_burya:     { title: '', url: 'https://music.yandex.ru/album/32994948' },
-    singl_abrikos:   { title: '', url: 'https://music.yandex.ru/album/14943531' },
-    singl_grafik:    { title: '', url: 'https://music.yandex.ru/album/9316407' },
-    singl_tiktok:    { title: '', url: 'https://music.yandex.ru/album/19991752' },
-    singl_kapel:     { title: '', url: 'https://music.yandex.ru/album/19613107' },
-    singl_lirikal:   { title: '', url: 'https://music.yandex.ru/album/10696876' },
-    singl_neudach:   { title: '', url: 'https://music.yandex.ru/album/12016321' },
-    singl_ottepel:   { title: '', url: 'https://music.yandex.ru/album/13697767' },
-    singl_poidem:    { title: '', url: 'https://music.yandex.ru/album/31043937' },
-    singl_privet:    { title: '', url: 'https://music.yandex.ru/album/32208225' },
-    singl_pank:      { title: '', url: 'https://music.yandex.ru/album/29808439' },
-    singl_letom:     { title: '', url: 'https://music.yandex.ru/album/16262242' },
-    singl_vesna:     { title: '', url: 'https://music.yandex.ru/album/23086266' },
-    singl_ajzek:     { title: '', url: 'https://music.yandex.ru/album/41285679' },
-    singl_beskont:   { title: '', url: 'https://music.yandex.ru/album/9931907' },
-    singl_bejs:      { title: '', url: 'https://music.yandex.ru/album/31341225' },
-    singl_tajna:     { title: '', url: 'https://music.yandex.ru/album/39681063' },
-    singl_diss:      { title: '', url: 'https://music.yandex.ru/album/21217143' },
-    singl_igrushki:  { title: '', url: 'https://music.yandex.ru/album/26489382' },
-    singl_lofi:      { title: '', url: 'https://music.yandex.ru/album/27003127' },
-    singl_luchshee:  { title: '', url: 'https://music.yandex.ru/album/43265756' },
-    singl_nevynos:   { title: '', url: 'https://music.yandex.ru/album/37743878' },
-    singl_pervy:     { title: '', url: 'https://music.yandex.ru/album/23421455' },
-    singl_plastyr:   { title: '', url: 'https://music.yandex.ru/album/37840750' },
-    singl_rakushki:  { title: '', url: 'https://music.yandex.ru/album/30235395' },
-    singl_nepoim:    { title: '', url: 'https://music.yandex.ru/album/30562253' },
-    singl_koleso:    { title: '', url: 'https://music.yandex.ru/album/34728300' },
-    singl_oshib:     { title: '', url: 'https://music.yandex.ru/album/25337418' },
-    singl_ustal:     { title: '', url: 'https://music.yandex.ru/album/35648572' },
-    fit_gdepapa:     { title: '', url: 'https://music.yandex.ru/album/34191959/track/133033982' },
-    fit_begat:       { title: '', url: 'https://music.yandex.ru/album/38344523/track/137826262' },
-    fit_karting:     { title: '', url: 'https://music.yandex.ru/album/36413113/track/138659220' },
-    fit_uhodi:       { title: '', url: 'https://music.yandex.ru/album/42214426/track/151388535' },
-    fit_chernym:     { title: '', url: 'https://music.yandex.ru/album/43378588/track/154402656' },
-    fit_zabyl:       { title: '', url: 'https://music.yandex.ru/album/38385579/track/143325352' },
-
-    // ── Тайные (вне основной дискографии) ──
-    secret:          { title: 'Вне дискографии', url: '#' },
-};
-
-const quotes = [
-		{ track: '1212', album: 'ADHD', text: 'Ради себя, не люда, во имя медали, хули? Чтоб стрельнуть, мэйби, но я не видал их пуль.' },
-		{ track: '1212', album: 'ADHD', text: 'Если чё-то делать, то делать на пять с плюсом.' },
-		{ track: '1212', album: 'ADHD', text: 'Кто в теме со мной, на первый-второй. Звук правит толпой, мы друг за друга, без левых.' },
-		{ track: '1212', album: 'ADHD', text: 'Попробуй не пытаться никому ничё доказывать.' },
-
-		{ track: 'TRINITY CYPHER', album: 'ADHD', text: 'Так как есть! Пофиг это клуб, бар или подъезд. Кто хочет в рейв — попадут под пресс.' },
-		{ track: 'TRINITY CYPHER', album: 'ADHD', text: 'Мы же каждый раз и через тыщу километров делаем это. И повода не нужно, чтобы справиться.' },
-		{ track: 'TRINITY CYPHER', album: 'ADHD', text: 'Навали басы и мой гэнг. Влетает в бит, как будто Liu Kang.' },
-		{ track: 'TRINITY CYPHER', album: 'ADHD', text: 'Каждый новый день пишем историю.' },
-
-		{ track: 'во дворе', album: 'ADHD', text: 'Путь от наушников в концерт. Забыв про свой страх умереть, себя почувствовать живым.' },
-		{ track: 'во дворе', album: 'ADHD', text: 'Чё бояться, если все умрём? Рад бы сдаться, чё-то не даёт.' },
-		{ track: 'во дворе', album: 'ADHD', text: 'И этот звук шагами за спиною во дворе. Пусть страха нет, и чтобы телом не стареть.' },
-		{ track: 'во дворе', album: 'ADHD', text: 'Что происходит во дворе, то остаётся во дворе. Где вырос — там и постареть.' },
-
-		{ track: 'мы не станем другими', album: 'ADHD', text: 'Мы не станем другими, даже если вопреки. Обстоятельства разрушат наши души изнутри.' },
-		{ track: 'мы не станем другими', album: 'ADHD', text: 'Просто запомни меня глупым, счастливым и молодым.' },
-		{ track: 'мы не станем другими', album: 'ADHD', text: 'Я сотру воспоминания, как старый кинофильм.' },
-		{ track: 'мы не станем другими', album: 'ADHD', text: 'Почувствуй себя молодым!' },
-
-		{ track: 'с самим собой', album: 'ADHD', text: 'Мой жизненный путь — это подъём с переворотом. А когда переворот — тут только мне решать.' },
-		{ track: 'с самим собой', album: 'ADHD', text: 'Я вырос человеком, спасибо вам. Мои великие мама и папа.' },
-		{ track: 'с самим собой', album: 'ADHD', text: 'Всю жизнь одну с самим собой. Разве так можно? Прожил и всё.' },
-		{ track: 'с самим собой', album: 'ADHD', text: 'Если в этом суть — перебороть, то, кто не справился, честно, мне правда жаль их.' },
-
-		{ track: 'phantasmagoria', album: 'PHANTASMAGORIA', text: 'Давай меняться: тебе это, тебе это — по рукам. Кто неделимый — разделит напополам.' },
-		{ track: 'phantasmagoria', album: 'PHANTASMAGORIA', text: 'Малышу взрослому тяжело, где вы? Тот, кто с тобой детские травмы разделит.' },
-		{ track: 'phantasmagoria', album: 'PHANTASMAGORIA', text: 'Фантасмагория. В узелок солнце, да в узелок тени.' },
-		{ track: 'phantasmagoria', album: 'PHANTASMAGORIA', text: 'Выверни мир наизнанку. Подкинь монетку: что выпадет, то и есть внутрянка.' },
-
-		{ track: 'автодром', album: 'PHANTASMAGORIA', text: 'Я лучше с удовольствием влечу в кого-нибудь на полной скорости, чем жить, опасаясь, что согрешу.' },
-		{ track: 'автодром', album: 'PHANTASMAGORIA', text: 'Грех — это не жить во снах, грех — не победить свой страх.' },
-		{ track: 'автодром', album: 'PHANTASMAGORIA', text: 'Жизнь — это вечный автодром.' },
-		{ track: 'автодром', album: 'PHANTASMAGORIA', text: 'Грех — это не избежать, грех — это тебе решать.' },
-
-		{ track: 'карусель', album: 'PHANTASMAGORIA', text: 'Это может не по-детски, но коли не хотели. А ты вот захоти, и приходи на карусель.' },
-		{ track: 'карусель', album: 'PHANTASMAGORIA', text: '«А где ваша человечность?» — мы не люди, мы лошади.' },
-		{ track: 'карусель', album: 'PHANTASMAGORIA', text: 'Оно же само совершенство. Еду, не боясь, наперегонки, кого-нибудь догонят, но не нас.' },
-		{ track: 'карусель', album: 'PHANTASMAGORIA', text: 'Запуская аппарат, была тревога немного. Но всё-таки хорошо, что всё хорошо.' },
-
-		{ track: 'комната смеха', album: 'PHANTASMAGORIA', text: 'Жизнь — это тоже комната смеха. Искажение правды: кривишь душой, и съехало плечо.' },
-		{ track: 'комната смеха', album: 'PHANTASMAGORIA', text: 'Шаг, смех, шаг — ближе. Готов поклясться, был бы мёртв, ты бы тоже услышал.' },
-		{ track: 'комната смеха', album: 'PHANTASMAGORIA', text: 'Умираю, что же? До свидания, мир. Снова умираю, даже находясь внутри.' },
-		{ track: 'комната смеха', album: 'PHANTASMAGORIA', text: 'Разницы нету: страха ли смеха комната, коли ты прячешься там, я тебя найду.' },
-
-		{ track: 'мало-помалу', album: 'PHANTASMAGORIA', text: 'Самый счастливый день — каждый день, загляденье. И вмиг слетают очки, размывая розовый день.' },
-		{ track: 'мало-помалу', album: 'PHANTASMAGORIA', text: 'Одна осечка — всем счастья стало не надо. Я тут вообще ни при чём, и ты сама виновата.' },
-		{ track: 'мало-помалу', album: 'PHANTASMAGORIA', text: 'Мало-помалу, но будут все, того самого главного, может, нет.' },
-		{ track: 'мало-помалу', album: 'PHANTASMAGORIA', text: 'Но если смерти не даёшься, что в порядке вещей, тебе, может быть, подойдёт мой добрый парк развлечений.' },
-
-		{ track: 'медленный танец', album: 'PHANTASMAGORIA', text: 'Типичные люди, вечно им что-то да не хватает. Так долго болтались между, что в целом-то, да и хуй с ними.' },
-		{ track: 'медленный танец', album: 'PHANTASMAGORIA', text: 'Руки в крови по локоть, но брать вину не согласен. Повторил б ещё раз, но я не верю в реинкарнацию.' },
-		{ track: 'медленный танец', album: 'PHANTASMAGORIA', text: 'И души переплетаясь, тянут всё за собой в этот мерзкий медленный танец.' },
-		{ track: 'медленный танец', album: 'PHANTASMAGORIA', text: 'Ни в Рай, ни в Ад не пускает. Типичные люди, вечно им что-то да не хватает.' },
-
-		{ track: 'свободное падение', album: 'PHANTASMAGORIA', text: 'За работу, раз ты присягнул, если страх питает мотор. То едва-едва пристегнул их, о будущем думать — фи.' },
-		{ track: 'свободное падение', album: 'PHANTASMAGORIA', text: 'Всем добро пожаловать в свободное падение. Так, чтобы в небе не пугали привидения.' },
-		{ track: 'свободное падение', album: 'PHANTASMAGORIA', text: 'Плохое хорошее поведение. Всем добро пожаловать в свободное падение.' },
-		{ track: 'свободное падение', album: 'PHANTASMAGORIA', text: 'Враз и застрял на полпути — беда-беда. Не податься нам уж ни туда, да ни сюда.' },
-
-		{ track: 'эпилог', album: 'PHANTASMAGORIA', text: 'Пара хороших дел в настоящем не поменяет прошлое.' },
-		{ track: 'эпилог', album: 'PHANTASMAGORIA', text: 'Нас сюжет куда-то несёт, но нам достаточно в жизни счастливый конец — и всё. Пусть тебе никто не помог.' },
-		{ track: 'эпилог', album: 'PHANTASMAGORIA', text: 'Я стану жертвой последней, что завершит эпилог.' },
-		{ track: 'эпилог', album: 'PHANTASMAGORIA', text: 'Как повзрослеешь, о людях не думай, что все абсолютно добры или все абсолютно ублюдки.' },
-
-		{ track: 'дорога из Миннесоты', album: 'anemone', text: 'Независимость мозга – всё, управляются управленцами. Мыслить, как непотребство и действие – есть бездействие.' },
-		{ track: 'дорога из Миннесоты', album: 'anemone', text: 'Поможешь мне отыскать ту дорогу из Миннесоты?' },
-		{ track: 'дорога из Миннесоты', album: 'anemone', text: 'Судьбою детство прекрасное не дано. Могу доверять лишь созвездиям в небесах надо мной.' },
-		{ track: 'дорога из Миннесоты', album: 'anemone', text: 'Дни тянутся как резина. Ох, где бы мне найти сил.' },
-
-		{ track: 'однополярности', album: 'anemone', text: 'Я врываюсь им в мозг через пулю из жалости. Ох, эти странные однополярности.' },
-		{ track: 'однополярности', album: 'anemone', text: 'Если жизнь - это дорога, то газуйте!' },
-		{ track: 'однополярности', album: 'anemone', text: 'Если это был сон — наяву несёт страх. Люди говорят: «Своего не создал!»' },
-		{ track: 'однополярности', album: 'anemone', text: 'Это был мост, что теперь не создать. Люди говорят, говорят, но со зла.' },
-
-		{ track: 'почему космос не пишет про нас', album: 'anemone', text: 'Планета с разумной жизнью внутри, ага. Летом за солнцепёки Солнце отменим в Твиттерах.' },
-		{ track: 'почему космос не пишет про нас', album: 'anemone', text: 'Сколько песен про него спето и ни одной нет в ответ, но если б мог, он точно бы спел хотя бы куплет.' },
-		{ track: 'почему космос не пишет про нас', album: 'anemone', text: 'Снова космос хочется взять и в песне воспеть, чего ради? Узнать все тайны хоть на день.' },
-		{ track: 'почему космос не пишет про нас', album: 'anemone', text: 'Небеса молчат, хотя ответов просят тысячи.' },
-
-		{ track: 'родинки', album: 'anemone', text: 'А мы с тобой, выходит, больше не детвора. Теперь не буду-буду-буду твоим другом никогда.' },
-		{ track: 'родинки', album: 'anemone', text: 'Дай цемнуть один раз твоим веснушкам мои родинки.' },
-		{ track: 'родинки', album: 'anemone', text: 'Как замечательно выходит, больше не детвора. Теперь я буду-буду, вроде, твоим другом, не всегда.' },
-		{ track: 'родинки', album: 'anemone', text: 'У тебя больше не заполнит никто пустоту внутри. Мой внутренний мирок готов помочь тебе с этим.' },
-
-		{ track: 'царапка', album: 'anemone', text: 'На тысячу ран есть тысяча швов. И на тысячу фраз «Илья!» ты услышишь тысячу «что?»' },
-		{ track: 'царапка', album: 'anemone', text: 'Ведь все твои желания — палитра чёрного с белым.' },
-		{ track: 'царапка', album: 'anemone', text: 'Всё это даже не слова. Не собрать или не сломать их.' },
-		{ track: 'царапка', album: 'anemone', text: 'Намёков уже кругом голова. Ведь это даже не слова.' },
-
-		{ track: 'Видеть сны', album: 'AKUST', text: 'Мне жалко времени, которое я мог бы уделить строчкам на биток.' },
-		{ track: 'Видеть сны', album: 'AKUST', text: 'Природа, ты прости, но я у тебя ничего не занимал.' },
-		{ track: 'Видеть сны', album: 'AKUST', text: 'Ведь для вселенной мы ничто. А я треть жизни каждый год зачем-то вынужден ей отдавать на сон.' },
-		{ track: 'Видеть сны', album: 'AKUST', text: 'Лучше б я сдох, даже через пару лет. Только сними с меня необходимость видеть сон.' },
-
-		{ track: 'Две минуточки для мыльных пузырей', album: 'AKUST', text: 'Шестьдесят лет несчастной жизни на сто секунд без проблем.' },
-		{ track: 'Две минуточки для мыльных пузырей', album: 'AKUST', text: 'Не говорит о том, что мы тоже мыльные пузыри?' },
-		{ track: 'Две минуточки для мыльных пузырей', album: 'AKUST', text: 'Две минуточки для мыльных пузырей. Это запомню, как последний кадр.' },
-		{ track: 'Две минуточки для мыльных пузырей', album: 'AKUST', text: 'Вроде без пользы то времяпрепровождение, но больше эмоций, чем от прошлого дня рождения.' },
-
-		{ track: 'Не останавливайтесь на выходе из жизни', album: 'AKUST', text: 'Жизнь так коротка, как детский мат в шахматной партии.' },
-		{ track: 'Не останавливайтесь на выходе из жизни', album: 'AKUST', text: 'Это знаки знаки знак, не стой на выходе из жизни.' },
-		{ track: 'Не останавливайтесь на выходе из жизни', album: 'AKUST', text: 'Мамочка так и так и так. Горько плачет, жизнь упустив.' },
-		{ track: 'Не останавливайтесь на выходе из жизни', album: 'AKUST', text: 'Уступайте места нуждающимся. Кому то это нужно больше.' },
-
-		{ track: 'Небо красное полотно (live)', album: 'AKUST', text: 'Солнце - цикличный механизм, что взбирается на гору ввысь. И шаром катит вниз.' },
-		{ track: 'Небо красное полотно (live)', album: 'AKUST', text: 'Систему меряет успешность числом прожитых дней. Мне хватит и пары минут.' },
-		{ track: 'Небо красное полотно (live)', album: 'AKUST', text: 'Небо красное полотно. Красное полотно.' },
-		{ track: 'Небо красное полотно (live)', album: 'AKUST', text: 'Сделать искусством то, что не берегут.' },
-
-		{ track: 'Откат', album: 'AKUST', text: 'Вечно существовать — не жить. Хочу в откат.' },
-		{ track: 'Откат', album: 'AKUST', text: 'Как оказалось в конце, богом был я. Но если это так, тогда откуда тот бессмертный дар?' },
-		{ track: 'Откат', album: 'AKUST', text: 'И на этом вся жизнь поверь закончится когда-то. Я пойму, но поздно, что все не обман.' },
-		{ track: 'Откат', album: 'AKUST', text: 'Мне время по колено, но не стоит думать, что это так здорово. Мальчик, это мешает.' },
-
-		{ track: 'Цветочек маленький', album: 'AKUST', text: 'Любовь сильнее страха, сильнее всего в этом мире. И вот она пустилась в путь, навстречу Биллу.' },
-		{ track: 'Цветочек маленький', album: 'AKUST', text: 'Оставив дом, мы с тобою идём вдвоём. Давай оставим всё лишь ради встречи вновь.' },
-		{ track: 'Цветочек маленький', album: 'AKUST', text: 'Она ждала его долго — несколько дней. Скажите мало, но с такой любовью надо быстрей.' },
-		{ track: 'Цветочек маленький', album: 'AKUST', text: 'А на столе стоял тот самый цветок. Её красивый, живой, цветочек маленький.' },
-
-		{ track: 'абсолютный ноль', album: 'MAYAK', text: 'Время лечит, но во времени я — абсолютный ноль. В отрезке времени изгой.' },
-		{ track: 'абсолютный ноль', album: 'MAYAK', text: 'Петля захлопнется со мной, и я потерян, в тесноте, да не в обиде, но живой.' },
-		{ track: 'абсолютный ноль', album: 'MAYAK', text: 'Время замкнёт и нас обоих. В этом городе где человек, как абсолютный ноль.' },
-		{ track: 'абсолютный ноль', album: 'MAYAK', text: 'Петля как бусики на шее. Крепкий узелок, и мы в крепких отношениях.' },
-
-		{ track: 'аэростат', album: 'MAYAK', text: 'Правде вторить любить я стал, но коль у каждого своя, то, будь добр, душить отстань.' },
-		{ track: 'аэростат', album: 'MAYAK', text: 'Где не понять, кто нет, кто прав. Накроет город томный туман. И никогда не сможет стать счастливым этот грустный роман.' },
-		{ track: 'аэростат', album: 'MAYAK', text: 'Я сотворю тебе письмо. Хоть знаю, ты не понимаешь моих песен, но.' },
-		{ track: 'аэростат', album: 'MAYAK', text: 'Для меня семь дней на неделе — это семь нот.' },
-
-		{ track: 'беспорядочная сказка (Муза III)', album: 'MAYAK', text: 'Чем я лучше живу, тем та больше бодается. Зависть кусается, но не более.' },
-		{ track: 'беспорядочная сказка (Муза III)', album: 'MAYAK', text: 'Вернусь опять писать наверно беспорядочную сказку о том, где все мы.' },
-		{ track: 'беспорядочная сказка (Муза III)', album: 'MAYAK', text: 'И мой исписан стол, напившись снова. Спрячусь как все, в своих рассказах где-то.' },
-		{ track: 'беспорядочная сказка (Муза III)', album: 'MAYAK', text: 'Я, ты, мы, каждый из нас — кислые аскорбинки.' },
-
-		{ track: 'глобальный вайп', album: 'MAYAK', text: 'Ведь наша жизнь — игра, то есть донатная помойка, неправильно и горько.' },
-		{ track: 'глобальный вайп', album: 'MAYAK', text: 'И когда вся информация в нас канет во времени, тогда же и поймём, всё.' },
-		{ track: 'глобальный вайп', album: 'MAYAK', text: 'Меня всё это достало, я хочу обновления. Если нами играют плохо так.' },
-		{ track: 'глобальный вайп', album: 'MAYAK', text: 'Моя дата регистрации — двадцать восьмое апреля. Год девяносто девятый, я тут далеко не первый.' },
-
-		{ track: 'который ищет маяк', album: 'MAYAK', text: 'Я виноват, но в дальнем космосе, мне была мила тьма.' },
-		{ track: 'который ищет маяк', album: 'MAYAK', text: 'Увидимся в следующем мире. Знак спасать я поздно выбрал.' },
-		{ track: 'который ищет маяк', album: 'MAYAK', text: 'Квазар, оставь, нас там, где были. И стань, звезда, нам как, погибель.' },
-		{ track: 'который ищет маяк', album: 'MAYAK', text: 'Ким, и я смог найти Космоцветок. Отыскал, забирай, не горюй, всё не как на картинках.' },
-
-		{ track: 'кто-то должен опылять цветок', album: 'MAYAK', text: 'Хотели бы летать, беззаботно и высоко, но даже знает насекомое, что кто-то должен опылять цветок.' },
-		{ track: 'кто-то должен опылять цветок', album: 'MAYAK', text: 'Мир, построенный на костях, никогда не взрастёт цветами.' },
-		{ track: 'кто-то должен опылять цветок', album: 'MAYAK', text: 'Жизнь делится секторами, как гексы глазами пчёл.' },
-		{ track: 'кто-то должен опылять цветок', album: 'MAYAK', text: 'Когда нет ничего, но что лучше, чем благодать. Мир, построенный на костях, никогда не взрастёт цветами.' },
-
-		{ track: 'не то, что ты хотела бы слышать под лоуфай', album: 'MAYAK', text: 'Ты так долго носила маску, что забыл черты лица.' },
-		{ track: 'не то, что ты хотела бы слышать под лоуфай', album: 'MAYAK', text: 'Пишу не то, что ты хотела бы слышать под лоуфай.' },
-		{ track: 'не то, что ты хотела бы слышать под лоуфай', album: 'MAYAK', text: 'Время летит рассветами, закатами. Что лечишь я не знал, но теперь и мне всё понятно.' },
-		{ track: 'не то, что ты хотела бы слышать под лоуфай', album: 'MAYAK', text: 'Хочешь меня забыть, но такое не забывается.' },
-
-		{ track: 'оттепели не быть', album: 'MAYAK', text: 'Личность пошлют, и она пойдёт. Куда дорога приведёт, вдруг?' },
-		{ track: 'оттепели не быть', album: 'MAYAK', text: 'Жарил, как в топка в поезде, оттепели не быть.' },
-		{ track: 'оттепели не быть', album: 'MAYAK', text: 'Мне уже не наверстать, и попрятались мои доводы. Я громко восклицаю: «Да пропади оно пропадом!»' },
-		{ track: 'оттепели не быть', album: 'MAYAK', text: 'Ты боязно догонишь, что поздно друг уходить. Хоть тебе сотню раз, твой собственный мозг умолял остыть.' },
-
-		{ track: 'позже будет больнее', album: 'MAYAK', text: 'В девочке нет горя и жалости, но поверь, она пока не понимает, но позже будет больней.' },
-		{ track: 'позже будет больнее', album: 'MAYAK', text: 'И взрослыми был соткан мир — тот тонный мир, тот тёмный мир. Странный мир, страшный мир, каждый миг.' },
-		{ track: 'позже будет больнее', album: 'MAYAK', text: 'Где жизнь — это счастье, как будто на самом деле. И Солнце не гаснет, где добрый мир нас пригреет.' },
-		{ track: 'позже будет больнее', album: 'MAYAK', text: 'Нам жаль, но есть вещи, что исправить нет времени.' },
-
-		{ track: 'рожденный умереть', album: 'MAYAK', text: 'Убийство — это плохо, но, что плохо — то я.' },
-		{ track: 'рожденный умереть', album: 'MAYAK', text: 'Я рождённый умереть не один, а бесконечное количество раз.' },
-		{ track: 'рожденный умереть', album: 'MAYAK', text: 'Природе непонятно, зато я похоже что-то начал понимать.' },
-		{ track: 'рожденный умереть', album: 'MAYAK', text: 'Один хороший я, паразит — не грусти, избавлю вас от себя.' },
-
-		{ track: 'тебе понравится', album: 'MAYAK', text: 'А жить здорово, правильно? Здорово осознавать — ты живой! Остальное — не главное.' },
-		{ track: 'тебе понравится', album: 'MAYAK', text: 'Я пустой абсолютно. В траур никто не пускает салюты. Даже не страшно от последствий.' },
-		{ track: 'тебе понравится', album: 'MAYAK', text: 'Тебе понравится. Я заебался, устал и не справился. Это ль не празднество?' },
-		{ track: 'тебе понравится', album: 'MAYAK', text: 'Вижу мир в двух цветах: «люблю» и «пошёл нахуй».' },
-
-		{ track: 'ты рядом', album: 'MAYAK', text: 'Мысли мне напоминают о том, чего не учёл. Летописи навека, но задумчивы, не о чём.' },
-		{ track: 'ты рядом', album: 'MAYAK', text: 'Ты рядом, ты рядом, но я не могу. Терять их, терять их, снова одному.' },
-		{ track: 'ты рядом', album: 'MAYAK', text: 'Мне в вакууме дышится проще, чем в пространстве, закрытом коммунальным чеком.' },
-		{ track: 'ты рядом', album: 'MAYAK', text: 'В любви сливаются даже галактики.' },
-
-		{ track: 'тэм на коллеж', album: 'MAYAK', text: 'В доброте зла не прописано, в зле доброта найдется. Всё, это просто немыслимо, мыслить это не просто.' },
-		{ track: 'тэм на коллеж', album: 'MAYAK', text: 'Меня честно волнует хватит ли денег, для тэм на коллеж.' },
-		{ track: 'тэм на коллеж', album: 'MAYAK', text: 'Сюжет всегда повернется, спиной, ладно ну что ж. Меня честно волнует хватит ли денег, для тэм на коллеж.' },
-		{ track: 'тэм на коллеж', album: 'MAYAK', text: 'И в панике забит игрок, что игра забагана, дико лагает. Управление как будто не то, но с чего он взял что управляет?' },
-
-		{ track: 'человейники', album: 'MAYAK', text: 'С этой временной петли нам шею вызволить вообще никак. Дом-работа-гроб, такой вот ритм человейника.' },
-		{ track: 'человейники', album: 'MAYAK', text: 'Но в человейнике, каждый оставит след.' },
-		{ track: 'человейники', album: 'MAYAK', text: 'Над городом туман, и счастья нет. Болото из оков сжимает, и в окнах погаснет свет.' },
-		{ track: 'человейники', album: 'MAYAK', text: 'Раз мне нет мнения милее, чем своё. Я шлю всё это к чёрту, и город горит огнём.' },
-
-		{ track: 'Девочка из аптечной', album: 'COSMOC', text: 'Я лечу душу, ты — сердце. Больна планета по-разному, и нам некуда деться.' },
-		{ track: 'Девочка из аптечной', album: 'COSMOC', text: 'Но нас одно объединяет — отвратительный почерк.' },
-		{ track: 'Девочка из аптечной', album: 'COSMOC', text: 'Дождик закончится, плюс — это лишь случайная встреча. И я в аптеке, где мне не помогут, ведь любовь не лечится.' },
-		{ track: 'Девочка из аптечной', album: 'COSMOC', text: 'Девочка-доктор смотрела им вслед. Это могло значить лишь одно.' },
-
-		{ track: 'Диана', album: 'COSMOC', text: 'Мне непросто уйти. Я смотрю вслед, ты так и знай.' },
-		{ track: 'Диана', album: 'COSMOC', text: 'Выкрути музыку громче, и мы станем потише.' },
-		{ track: 'Диана', album: 'COSMOC', text: 'Я вас рад так видеть, в этом алко-трипе. Вы принцесса желанная.' },
-		{ track: 'Диана', album: 'COSMOC', text: 'Ведь жизнь — это гонка, а мы ведь на скорости. Несёмся, не бойся, я рядом, слышишь.' },
-
-		{ track: 'Космоцветок', album: 'COSMOC', text: 'Мы скитаемся в поисках формулы нового, но больше нового нет.' },
-		{ track: 'Космоцветок', album: 'COSMOC', text: 'Я продолжаю путь ввысь, забрать космоцветок, чтобы дети увидели солнце.' },
-		{ track: 'Космоцветок', album: 'COSMOC', text: 'После сытости голод, но после дождика солнце и свет.' },
-		{ track: 'Космоцветок', album: 'COSMOC', text: 'Абстракция — самая верная формула.' },
-
-		{ track: 'Люцифер стихотворное', album: 'COSMOC', text: 'Кто продал душу и думает, что уже богат, не представляя, что такое настоящий Ад.' },
-		{ track: 'Люцифер стихотворное', album: 'COSMOC', text: 'Ну, здравствуйте, животные! Знакомьтесь, Люцифер.' },
-		{ track: 'Люцифер стихотворное', album: 'COSMOC', text: 'Я мастер небылицы, веселитесь. Всем желаниям недозволенным тут от меня не скрыться.' },
-		{ track: 'Люцифер стихотворное', album: 'COSMOC', text: 'Забыв про нравственность, я преодолел барьер.' },
-
-		{ track: 'Новая муза', album: 'COSMOC', text: 'Мой след беглый, я — тень прошлого себя. Мой свет блеклый, я здесь, чтобы забрать тебя.' },
-		{ track: 'Новая муза', album: 'COSMOC', text: 'И нет таких, кем бы не руководили. Но если тебя вёл не я, то тебя наебали сильно.' },
-		{ track: 'Новая муза', album: 'COSMOC', text: 'Пока тебя ведь не было рядом, всё замело, и моя родная муза, теперь я не знаю кто я.' },
-		{ track: 'Новая муза', album: 'COSMOC', text: 'Я твоя ненависть, мерзость, но я скучал так же, как ты.' },
-
-		{ track: 'Противоречие выборов', album: 'COSMOC', text: 'Врать — это плохо, во благо — не ложь. Бабки — порок, но без них мы не можем.' },
-		{ track: 'Противоречие выборов', album: 'COSMOC', text: 'Палитра возможностей с противоречием выборов. Ведь не важно почему, важно, что все же убили.' },
-		{ track: 'Противоречие выборов', album: 'COSMOC', text: 'Волки, волки — не видно никого. Волки, волки — снова угроз не видно.' },
-		{ track: 'Противоречие выборов', album: 'COSMOC', text: 'У меня мальчик просто хотел уйти с волками. Тварям ведь корысть — как двигатель, волк про неё не знает.' },
-
-		{ track: 'Сказка о теневом мире', album: 'COSMOC', text: 'Мир — детская сказка, где тень каждой новой страницы сотрет, не простившись с деталями старыми.' },
-		{ track: 'Сказка о теневом мире', album: 'COSMOC', text: 'Это значит — ещё живой. Человечешка у костра.' },
-		{ track: 'Сказка о теневом мире', album: 'COSMOC', text: 'Колыбельной, и в хоровод. Силуэты сплетаются.' },
-		{ track: 'Сказка о теневом мире', album: 'COSMOC', text: 'Мир — детская сказка, где тень каждой новой страницы сотрет, не простившись с деталями старыми.' },
-
-		{ track: 'Шестьдесят минут', album: 'COSMOC', text: 'Мы не причастны к времени и, пресмыкаясь, все идём, время бежит, но мы с ним не пересекаемся.' },
-		{ track: 'Шестьдесят минут', album: 'COSMOC', text: 'Твой час — это затравка перед тем как ты уйдёшь. Мой час уже настал, ты, как и я, этого ждёшь.' },
-		{ track: 'Шестьдесят минут', album: 'COSMOC', text: 'Шестьдесят минут за час. Шестьдесят мотивов быть минуточку несчастливым.' },
-		{ track: 'Шестьдесят минут', album: 'COSMOC', text: 'Вот так стекает в часики оставшийся песок. Солнца нет, пуст восход, лучик больше не придёт.' },
-
-		{ track: 'Эвкалиптовая ветвь', album: 'COSMOC', text: 'Мой дом не где город поселки, ведь мой дом нигде, на мира карте крест стёрт.' },
-		{ track: 'Эвкалиптовая ветвь', album: 'COSMOC', text: 'Кто зрелый снаружи, внутри будет вечнозелёным.' },
-		{ track: 'Эвкалиптовая ветвь', album: 'COSMOC', text: 'Эвкалиптова ветвь. Как последний оплот, мы изгнанники с острова вдали от нации.' },
-		{ track: 'Эвкалиптовая ветвь', album: 'COSMOC', text: 'Мне нужен не дом, а чтоб выбраться средство, я выберу искренность, честность.' },
-
-		{ track: 'Город за горизонтом', album: 'nichego', text: 'Достигну цель и вернусь, мне поверь. Что же может случится в пути, там были до нас.' },
-		{ track: 'Город за горизонтом', album: 'nichego', text: 'Уверенность — смена тревоги. Душа нашептала о доме забыть.' },
-		{ track: 'Город за горизонтом', album: 'nichego', text: 'Сочится свет через тучи огней. Салюты яркими красками накрывают наш праздник.' },
-		{ track: 'Город за горизонтом', album: 'nichego', text: 'Смотритель стоит и смеётся мне вслед.' },
-
-		{ track: 'История о семействе мушек с хорошей концовкой', album: 'nichego', text: 'Баю-бай, спи спокойно милый друг. Твоя прогнившая плоть — это домик для маленьких мух.' },
-		{ track: 'История о семействе мушек с хорошей концовкой', album: 'nichego', text: 'Кусками плоть гниёт, семейство мушек в вагоне с едой. Они просто хотят кушать, а кушать — это святое.' },
-		{ track: 'История о семействе мушек с хорошей концовкой', album: 'nichego', text: 'Крепкая семья: папочка, мамочка, дети и бабушка. Весело летать, у забродившей воды, в промежутке рельс.' },
-		{ track: 'История о семействе мушек с хорошей концовкой', album: 'nichego', text: 'Твоя прогнившая плоть — это домик для маленьких мух.' },
-
-		{ track: 'Муза', album: 'nichego', text: 'Через багровый лес метафор, как человек в скафандре, я покоряю космос из мыслей, где звёзды спали бы.' },
-		{ track: 'Муза', album: 'nichego', text: 'Я тебя сброшу вниз с обрыва грёз моих. Ещё век будешь падать, мир слышит, капают слёзы.' },
-		{ track: 'Муза', album: 'nichego', text: 'Снова скитаешься в мире, горы песка. Я утопил своё горе, тебя заставив оазис искать.' },
-		{ track: 'Муза', album: 'nichego', text: 'И ты станцуешь изящно в багровом платье на выпускном.' },
-
-		{ track: 'Отражение', album: 'nichego', text: 'Выжженная земля как память для нас. И пламя огня вместо тысячи фраз.' },
-		{ track: 'Отражение', album: 'nichego', text: 'Я роль лишь исполнял, обязан был сохранить. Крестраж, что в наших сердцах, я так хотел бы разбить.' },
-		{ track: 'Отражение', album: 'nichego', text: 'Затуманенный взор, но век оковы рассыпались в пепел.' },
-		{ track: 'Отражение', album: 'nichego', text: 'Мой друг — отражение в грязном стекле. Вагона купе того поезда-смертника.' },
-
-		{ track: 'Руку на пульсе', album: 'nichego', text: 'В ожидании вечного сна мы засыпаем, не веря в себя. Но, забывая о сути конца, мы петляем по жизни идя в никуда.' },
-		{ track: 'Руку на пульсе', album: 'nichego', text: 'И отправляется поезд туда, где стук колес отбивает наш пульс.' },
-		{ track: 'Руку на пульсе', album: 'nichego', text: 'Знаешь, затуманено было сознание. Давно уже потеряны воспоминания.' },
-		{ track: 'Руку на пульсе', album: 'nichego', text: 'Я не вернулся, состав повреждён был в дороге. Починить в миг невозможно, и по итогу.' },
-
-		{ track: 'Смерть на перепутье', album: 'nichego', text: 'Капли дождя заберут мои слёзы. Последний вдох, отравленный воздух.' },
-		{ track: 'Смерть на перепутье', album: 'nichego', text: 'Вороны разорвут моё тело. Мне даже не жаль, ты так и хотела.' },
-		{ track: 'Смерть на перепутье', album: 'nichego', text: 'Дождевой пеленой перекрытое небо. Не слышен крик помощи свыше, там нет его.' },
-		{ track: 'Смерть на перепутье', album: 'nichego', text: 'На перекрестке дорог раскинув нелепо ноги, я лёг.' },
-
-		{ track: 'Станционный смотритель', album: 'nichego', text: 'Несёт души в обитель станционный смотритель. Благодари что не видел, пока вы в пути себя остановите.' },
-		{ track: 'Станционный смотритель', album: 'nichego', text: 'Он питается мыслями, в счастье и радости больше нет смысла.' },
-		{ track: 'Станционный смотритель', album: 'nichego', text: 'Заброшенный хутор, мистический лес. Тьма. Тропы запутаны.' },
-		{ track: 'Станционный смотритель', album: 'nichego', text: 'Мысленно обвинять себя следует. Ведь упущен момент на заре.' },
-
-		{ track: 'Эдемово яблоко', album: 'nichego', text: 'Сердце распято, душа за решёткой. И все твои мысли принадлежат мне.' },
-		{ track: 'Эдемово яблоко', album: 'nichego', text: 'Бесконечный бой с тенью твоей — это яд. Но ты рядом, Эдемово яблоко.' },
-		{ track: 'Эдемово яблоко', album: 'nichego', text: 'В черепной переговорной комнате мне мешаешь планам неуместной похотью.' },
-		{ track: 'Эдемово яблоко', album: 'nichego', text: 'В городе радости, ведь я отчалил.' },
-
-		{ track: 'ворона', album: 'POTERYAN', text: 'Вас побеждает ворона, а у нас всё впереди. В эту тёмную ночь попсовик был убит некой птицей из нейросети.' },
-		{ track: 'ворона', album: 'POTERYAN', text: 'Победил в битве, но сам-то ты знаешь: войну заберёт AI.' },
-		{ track: 'ворона', album: 'POTERYAN', text: 'Жизнь — она, тряси в камеру задом. Да покажи себя в TikTok.' },
-		{ track: 'ворона', album: 'POTERYAN', text: 'Мой рэп — искусство, но к чёрту пафос, друзья.' },
-
-		{ track: 'запой', album: 'POTERYAN', text: 'Если Ад на Земле — это жопа, то этот весьма симпатичная задница.' },
-		{ track: 'запой', album: 'POTERYAN', text: 'Запой прекрасное, запой, все счастливы. Запой красивое, запой, спасибо вам.' },
-		{ track: 'запой', album: 'POTERYAN', text: 'Запой, как нужно, ты запой, послушаем. Запой, как чувствуешь, запой, за душу чтоб.' },
-		{ track: 'запой', album: 'POTERYAN', text: 'Мир нынче неприятное место. Да ладно — он всегда таким был, вот и нам прилетело.' },
-
-		{ track: 'культурный слой', album: 'POTERYAN', text: 'Те, кому мы оставим мир, на скорости с криком: «Останови!» Сойдут с пути.' },
-		{ track: 'культурный слой', album: 'POTERYAN', text: 'Мало ребёнком быть, сложней остаться им взрослым.' },
-		{ track: 'культурный слой', album: 'POTERYAN', text: 'Кому мы оставим мир, если даже всех нас некому спасти? Совсем одни.' },
-		{ track: 'культурный слой', album: 'POTERYAN', text: 'Машина, созданная творить, а не стрелять.' },
-
-		{ track: 'обыкновенная жизнь', album: 'POTERYAN', text: 'Обыкновенная жизнь самых необыкновенных существ.' },
-		{ track: 'обыкновенная жизнь', album: 'POTERYAN', text: 'Мы верим в жизнь вне рамок системы, как Серёга Симонов, чтоб типа «взял и сделал».' },
-		{ track: 'обыкновенная жизнь', album: 'POTERYAN', text: 'Всё, что кроет меня в настоящем и будущем, — яд; обстоятельства все — это больше меня.' },
-		{ track: 'обыкновенная жизнь', album: 'POTERYAN', text: 'Раз так придумали, что даже самый главный мастак в натуре придурок.' },
-
-		{ track: 'оставь себе', album: 'POTERYAN', text: 'И в твоих руках моё сердце, оставь себе. Если хочешь, оставь себе.' },
-		{ track: 'оставь себе', album: 'POTERYAN', text: 'Всё это не игра, хоть я предлагаю тебе поделиться страхом своим. Пусть Боги простят нам двоим грехи.' },
-		{ track: 'оставь себе', album: 'POTERYAN', text: 'По воле Бога любви и надежды ненастоящей. Был шанс довольно мизерный к меж нас происходящему.' },
-		{ track: 'оставь себе', album: 'POTERYAN', text: 'Пусть Боги простят нам двоим грехи. Пускай на костях и стоим.' },
-
-		{ track: 'Кладбище спасательных кругов', album: 'svetlayastorona', text: 'Глубина своего не отпустит, глубина и чужого не впустит.' },
-		{ track: 'Кладбище спасательных кругов', album: 'svetlayastorona', text: 'Уже не верю никому, больше не верю ни в кого.' },
-		{ track: 'Кладбище спасательных кругов', album: 'svetlayastorona', text: 'Мне реально не нужен никто, ничего. На кладбище спасательных кругов, что я сам и возвёл.' },
-		{ track: 'Кладбище спасательных кругов', album: 'svetlayastorona', text: 'И я кричу: «Останови меня!» Лечу, незамечающе вокруг, в самое дно, убить того, кто не помог.' },
-
-		{ track: 'Почемучка (feat. Екатерина Яшникова)', album: 'svetlayastorona', text: 'Все важные вопросы приходят к часу ночи нам.' },
-		{ track: 'Почемучка (feat. Екатерина Яшникова)', album: 'svetlayastorona', text: 'Один лишь вопрос на все времена: Почему ни на что нет ответов?' },
-		{ track: 'Почемучка (feat. Екатерина Яшникова)', album: 'svetlayastorona', text: 'Победа над собой — победа или пораженье?' },
-		{ track: 'Почемучка (feat. Екатерина Яшникова)', album: 'svetlayastorona', text: 'Если есть божья коровка, где же божий бык?' },
-
-		{ track: 'Сейв', album: 'svetlayastorona', text: 'Мой игровой прогресс — это вечное никогда.' },
-		{ track: 'Сейв', album: 'svetlayastorona', text: 'Любимый игровой процесс, ведущий нас в никуда.' },
-		{ track: 'Сейв', album: 'svetlayastorona', text: 'Игра — говно, в неё жизнь не вдохнули. Мы дышим ею давно, и не сказать чтобы кайфуем.' },
-		{ track: 'Сейв', album: 'svetlayastorona', text: 'И даже если где-то есть конец, то пусть будет так. Мне уже, честно, всё равно.' },
-
-		{ track: 'В пряничном домике', album: 'svetlayastorona', text: 'Мои нервные клетки новостей явно не стоят.' },
-		{ track: 'В пряничном домике', album: 'svetlayastorona', text: 'Мне всё равно, я у себя в пряничном домике.' },
-		{ track: 'В пряничном домике', album: 'svetlayastorona', text: 'Я отращу себе огромное толстое тело, чтоб механизм не мог вместить этот винтик системы (Фу)' },
-		{ track: 'В пряничном домике', album: 'svetlayastorona', text: 'На улице конец света: кругом крики о помощи. Ничё не слышно. Алиса, сделай телек погромче.' },
-
-		{ track: 'Поровну', album: 'svetlayastorona', text: 'Взрослым беды, измены поровну.' },
-		{ track: 'Поровну', album: 'svetlayastorona', text: 'Если все псы попали в Рай, тогда котам куда?' },
-		{ track: 'Поровну', album: 'svetlayastorona', text: 'Своим малым расскажут прямо, как в мире жить идеальном, чтобы они потом гордо сказали: «Предки п****здец з****бали».' },
-		{ track: 'Поровну', album: 'svetlayastorona', text: 'И ты вообще не знаешь, надо как пополам — кнут и пряник. Всё неправильно, надо учить не так.' },
-
-		{ track: 'Всем вернётся', album: 'svetlayastorona', text: 'Ты забил, но не забыл.' },
-		{ track: 'Всем вернётся', album: 'svetlayastorona', text: 'Я наконец вырос настолько, что могу отпустить их.' },
-		{ track: 'Всем вернётся', album: 'svetlayastorona', text: 'Всем вернётся. Всем вернётся.' },
-		{ track: 'Всем вернётся', album: 'svetlayastorona', text: 'Всё пусть на самом деле не вспоминай, не вспоминай, ведь коль грусть обид защемит, не забывай, что...' },
-
-		{ track: 'Для тебя', album: 'svetlayastorona', text: 'Хочу на море и вечное лето.' },
-		{ track: 'Для тебя', album: 'svetlayastorona', text: 'Что твой идущий к реке смог стать океаном.' },
-		{ track: 'Для тебя', album: 'svetlayastorona', text: 'Для тебя, конечно, есть солнце. Для тебя, конечно, весь воздух, но пробуй, собери со дна.' },
-		{ track: 'Для тебя', album: 'svetlayastorona', text: 'Нам достанется лишь то, что не получится забрать.' },
-
-		{ track: 'Примагнитило', album: 'svetlayastorona', text: 'Я тобой дышу, я рыба — ты жабры.' },
-		{ track: 'Примагнитило', album: 'svetlayastorona', text: 'Родная, походу нас примагнитило.' },
-		{ track: 'Примагнитило', album: 'svetlayastorona', text: 'Нас разбросало по границам мира, а ты мечтала по ночам о заграницах, мымра.' },
-		{ track: 'Примагнитило', album: 'svetlayastorona', text: 'Я знаю: ты придёшь, чтобы меня спасти.' },
-		
-		{ track: 'hate core', album: 'svetlayastorona', text: 'Не пизди на наших пацанов, сука, мы уважаемы. Твои пацаны сырые и мы отжарим их.' },
-		{ track: 'hate core', album: 'svetlayastorona', text: 'Ваши куплеты — это garbage. А мы всегда за мясо, будто бы Валерий Карпин.' },
-		{ track: 'hate core', album: 'svetlayastorona', text: 'Я прошёл рэп-игру, могу по ней составлять гайды. Это звук ширинки, ведь сейчас вы отсосали.' },
-		{ track: 'hate core', album: 'svetlayastorona', text: 'Папе здесь, папе здесь, папе здесь рады! Папе здесь, папе здесь, папе здесь все взгляды!' },
-
-		{ track: 'Кто убил лирический рэп', album: 'svetlayastorona', text: 'Как же, ребята, хорошо слушать лирический рэп.' },
-		{ track: 'Кто убил лирический рэп', album: 'svetlayastorona', text: 'Прикинь, отдыхаешь с кайфом в единственный выходной — и вдруг тебе чел насыпает про свои траблы с башкой.' },
-		{ track: 'Кто убил лирический рэп', album: 'svetlayastorona', text: 'Ваша важность сразу вырастает по величине. Если кто из твоих бро не любит лирический рэп.' },
-		{ track: 'Кто убил лирический рэп', album: 'svetlayastorona', text: 'Лирический рэп — душнота, никто не спорит, это так.' },
-
-		{ track: 'Ящики (feat. BOOKER)', album: 'svetlayastorona', text: 'Ящики, ящики, видишь ящики, ящики.' },
-		{ track: 'Ящики (feat. BOOKER)', album: 'svetlayastorona', text: 'Я синоним слова «респект».' },
-		{ track: 'Ящики (feat. BOOKER)', album: 'svetlayastorona', text: 'Взрослый — значит долбоёб, это на лбу, будто печать.' },
-		{ track: 'Ящики (feat. BOOKER)', album: 'svetlayastorona', text: 'Я не стал выбирать жизнь, я выбрал кое-что другое.' },
-
-		{ track: 'Не создать цветы (feat. playingtheangel)', album: 'svetlayastorona', text: 'Ведь что выдумал сам — обман, а что есть — расскажешь, где взял.' },
-		{ track: 'Не создать цветы (feat. playingtheangel)', album: 'svetlayastorona', text: 'Вон влюблённые, всмотрись: даже идут, словно танцуют.' },
-		{ track: 'Не создать цветы (feat. playingtheangel)', album: 'svetlayastorona', text: 'Если нету образа высшей пробы пера, то мне и незачем жить, даже незачем умирать.' },
-		{ track: 'Не создать цветы (feat. playingtheangel)', album: 'svetlayastorona', text: 'Я создаю для вас букеты, но мне не создать цветы.' },
-
-		{ track: 'Другая сторона (feat. STED.D)', album: 'svetlayastorona', text: 'Всё же оставив на ком-то пятно, всё равно мы уходим бесследно.' },
-		{ track: 'Другая сторона (feat. STED.D)', album: 'svetlayastorona', text: 'Слезинка катится на голый кафель, жизнь играется с тобою клубочком из эпитафий. «Он был хорошим», запятая. Тем временем вселенная просто продолжит жить по своим правилам.' },
-		{ track: 'Другая сторона (feat. STED.D)', album: 'svetlayastorona', text: 'Нет ничего короче обещанной вечной памяти.' },
-		{ track: 'Другая сторона (feat. STED.D)', album: 'svetlayastorona', text: 'Хватай мою ладонь и держись. Прошу, помоги узнать, что ждёт на другой половине жизни.' },
-
-		{ track: 'Мои маленькие кошмары', album: 'svetlayastorona', text: 'Вот и подружились, согласись, так стало лучше.' },
-		{ track: 'Мои маленькие кошмары', album: 'svetlayastorona', text: 'А чудовища с кошмаров тоже хотели любви.' },
-		{ track: 'Мои маленькие кошмары', album: 'svetlayastorona', text: 'И я засыпаю. В этом сне бесконечного времени хватит сполна. Не бросайте меня, мои маленькие кошмары.' },
-		{ track: 'Мои маленькие кошмары', album: 'svetlayastorona', text: 'Зачем убивать того, кого можно бы приютить? Иди ко мне на ручки.' },
-
-		{ track: 'Осенний листопад', album: 'svetlayastorona', text: 'Сложней всего сказать «прости», «пока», «прощай».' },
-		{ track: 'Осенний листопад', album: 'svetlayastorona', text: 'И пусть осенний листопад нагонит грусть, да посильней.' },
-		{ track: 'Осенний листопад', album: 'svetlayastorona', text: 'Знаешь, не велика беда, если можно об этом спеть.' },
-		{ track: 'Осенний листопад', album: 'svetlayastorona', text: 'Я обещал себе однажды, десять лет назад, наивно без прикрас. Столько раз я от реальности бегал, боясь, что примут не так.' },
-
-		{ track: '140 BPM CYPHER (2024)', album: 'singl_140bpm', text: 'Моя жизнь — блокбастер, это хорошо. Я радостный как Боб Марли, пусть у меня ноль.' },
-		{ track: '140 BPM CYPHER (2024)', album: 'singl_140bpm', text: 'Я настолько охуенный, что здороваюсь через порог.' },
-		{ track: '140 BPM CYPHER (2024)', album: 'singl_140bpm', text: 'В минуту добью с этой, а после влюблюсь в Баффи.' },
-		{ track: '140 BPM CYPHER (2024)', album: 'singl_140bpm', text: 'Поздравляю всех с Новым годом! Не могу не сказать, изтолпы на бите.' },
-
-		{ track: 'ATM 3', album: 'singl_atm3', text: 'Она думает, что я банкомат. А я люблю её глаза. Она любит деньги, это факт.' },
-		{ track: 'ATM 3', album: 'singl_atm3', text: 'Не убил себя — это дорого, дорого.' },
-		{ track: 'ATM 3', album: 'singl_atm3', text: 'Она думает, что я банкомат. А я люблю её глаза. Она любит деньги, это факт. Fuck you, fuck love.' },
-		{ track: 'ATM 3', album: 'singl_atm3', text: 'Я выебал банкомат, мои карманы многодетны.' },
-
-		{ track: 'ATM 4', album: 'singl_atm4', text: 'Чтобы снова Ксюхи охуенный завтрак съесть, ням-ням-ням-ням-ням, пиздато.' },
-		{ track: 'ATM 4', album: 'singl_atm4', text: 'Моя мать каллиграф, бро, да, в моих генах заложено делать красиво.' },
-		{ track: 'ATM 4', album: 'singl_atm4', text: 'В мире, где охота больше баловать и куролесить. Вари, голова, для песен, чтобы дальше делать мясо.' },
-		{ track: 'ATM 4', album: 'singl_atm4', text: 'Бабки в банке, но мы не в Кунсткамере. Боже, как же ебут тут барики.' },
-
-		{ track: 'AUTOBAN', album: 'singl_autoban', text: 'Ни Германия, ни Австрия. Уступи дорогу.' },
-		{ track: 'AUTOBAN', album: 'singl_autoban', text: 'Моя тачка — божество. Унижаем ваши тачки, ваши тачки — меньшинство.' },
-		{ track: 'AUTOBAN', album: 'singl_autoban', text: 'Уступи дорогу, уступи дорогу. Ни Германия, ни Австрия.' },
-		{ track: 'AUTOBAN', album: 'singl_autoban', text: 'Да, он свеженький с завода. Да, он хавает лишь сотый. Но ты знаешь, что мой тазик сделает твой шестисотый.' },
-
-		{ track: 'FLUV', album: 'singl_fluv', text: 'Мы с тобою по фанону, жалко, что мы не канон. Моя милая, запомни: парой будем всё равно.' },
-		{ track: 'FLUV', album: 'singl_fluv', text: 'Руки все в крови, исписаны страницы. Если б папа не ушёл, то он бы точно мной гордился.' },
-		{ track: 'FLUV', album: 'singl_fluv', text: 'Твои ноги разойдутся, будто в море корабли. Все узнают в интернетах о моей к тебе любви.' },
-		{ track: 'FLUV', album: 'singl_fluv', text: 'Мне с тобою хорошо, мне с тобою замечательно. Холод между нами не мешает мне мечтать о нас.' },
-
-		{ track: 'Rolls Royce Phantom', album: 'singl_rolls', text: 'Дороги нет: мы валим напролом. Ты ловишь пыль и выхлоп своим ртом.' },
-		{ track: 'Rolls Royce Phantom', album: 'singl_rolls', text: 'Обогнать нас — это фамильяр Эминема, миллиард флоу.' },
-		{ track: 'Rolls Royce Phantom', album: 'singl_rolls', text: 'Все треки с чартов — это тупо фон. Летит в витрину мой Rolls-Royce Phantom.' },
-		{ track: 'Rolls Royce Phantom', album: 'singl_rolls', text: 'Мой флоу — Rolls-Royce Phantom.' },
-
-		{ track: 'Tru3 B3ng3r', album: 'singl_tru3', text: 'Это true, true бэнгер. Ты не шаришь за мораль и ищешь кэш в моём кармане.' },
-		{ track: 'Tru3 B3ng3r', album: 'singl_tru3', text: 'А мы шарим за мораль, да, мы не fake, а money-money.' },
-		{ track: 'Tru3 B3ng3r', album: 'singl_tru3', text: 'Спёр старый стиль и стал клоном. Здравствуй, чувствуй себя гондоном.' },
-		{ track: 'Tru3 B3ng3r', album: 'singl_tru3', text: 'Как ты можешь говорить о стиле? Выебонишь этим яро, но не сам его растил.' },
-
-		{ track: 'catharsis', album: 'singl_catharsis', text: 'Это даже не слова, может, нас и не собрать. Но пока тебя не было, вместе нас нарисовал.' },
-		{ track: 'catharsis', album: 'singl_catharsis', text: 'Любви в кандалах не бывает.' },
-		{ track: 'catharsis', album: 'singl_catharsis', text: 'Твой мир внутри — всё горит и пылает. Лети сквозь сны, bae, please never die.' },
-		{ track: 'catharsis', album: 'singl_catharsis', text: 'Раз, два и нас кружит дальше вверх-вниз. Мы так и так дружим, зай, улыбнись.' },
-
-		{ track: 'Бумажный самолёт', album: 'singl_bumazhny', text: 'Чем меньше героев, тем благополучней.' },
-		{ track: 'Бумажный самолёт', album: 'singl_bumazhny', text: 'Прочь улетит, расправив крылья, как бумажный самолёт.' },
-		{ track: 'Бумажный самолёт', album: 'singl_bumazhny', text: 'И коли все не могут свидеть его впредь, последний раз отправит вести телеграммный воробей.' },
-		{ track: 'Бумажный самолёт', album: 'singl_bumazhny', text: 'Полгода в поисках, лишь многоточие. Полгода в поисках нескольких строчек.' },
-
-		{ track: 'Буря, метель и мгла', album: 'singl_burya', text: 'Если клянёшься в любви, всегда держи крестом пальчики за спиной.' },
-		{ track: 'Буря, метель и мгла', album: 'singl_burya', text: 'Невелика беда, если ты с ней и я. Буря, метель и мгла — ничто, если ты с ней и я.' },
-		{ track: 'Буря, метель и мгла', album: 'singl_burya', text: 'А я хочу одного. Хочу, чтобы искренность между нами шла искрами.' },
-		{ track: 'Буря, метель и мгла', album: 'singl_burya', text: 'Проблемы с головою, мои тики, крики замечены. Любить такого смогла б лишь очень сильная женщина.' },
-
-		{ track: 'В абрикосовой долине', album: 'singl_abrikos', text: 'Одинокий в долине, но тут мой целый мир. Где мы играемся в прятки, навряд ли.' },
-		{ track: 'В абрикосовой долине', album: 'singl_abrikos', text: 'Где не могут найти нас, но смогу ли найти тебя?' },
-		{ track: 'В абрикосовой долине', album: 'singl_abrikos', text: 'Я меняю краски на взгляд твой. Одинокий в долине, но тут мой целый мир.' },
-		{ track: 'В абрикосовой долине', album: 'singl_abrikos', text: 'Он плетётся по дороге в абрикосовой долине.' },
-
-		{ track: 'Графиками выходных', album: 'singl_grafik', text: 'Мой милый механизм закручен графиками выходных. Подобно их выпадению, с жизни выпадешь и ты.' },
-		{ track: 'Графиками выходных', album: 'singl_grafik', text: 'Самое яркое, что в своей жизни ты видел - от офисной лампы свет.' },
-		{ track: 'Графиками выходных', album: 'singl_grafik', text: 'Лишь час ты задержишься тут, чтобы выключить окна. И станет вдовой одинокой работа.' },
-		{ track: 'Графиками выходных', album: 'singl_grafik', text: 'И, как заплутавшая мушка, ты видишь лишь выход в открытом окне, и лететь.' },
-
-		{ track: 'Девочка с тиктока', album: 'singl_tiktok', text: 'Для меня в жизни найти девушку — это уже успех.' },
-		{ track: 'Девочка с тиктока', album: 'singl_tiktok', text: 'Девочка с TikTok\'а, побудь со мной немного. Мне так одиноко, но ты — мечта и только.' },
-		{ track: 'Девочка с тиктока', album: 'singl_tiktok', text: 'Знаешь чувство, будто забуксовал. Я зарегался в TikTok\'е, ведь заебал Instagram.' },
-		{ track: 'Девочка с тиктока', album: 'singl_tiktok', text: 'Сидя в TikTok\'е я нашёл тебя всего одним свайпом вверх.' },
-
-		{ track: 'Капель', album: 'singl_kapel', text: 'Плакать не страшно, боязно слезам чужим не поверить.' },
-		{ track: 'Капель', album: 'singl_kapel', text: 'Любовь всё равно кончится, не надо это ждать.' },
-		{ track: 'Капель', album: 'singl_kapel', text: 'И этот зво-о-о-он гремит в ушах, как самый страшный гром. Сладким тоном так манит любовь.' },
-		{ track: 'Капель', album: 'singl_kapel', text: 'За чередою дней вижу, как ты со мной не спишь. Несколько слов прочти, что мне говорить будет лишним.' },
-
-		{ track: 'Лирикал Лонг', album: 'singl_lirikal', text: 'Я снова стою на краю, я хочу умереть здесь. Только так чувствую я уют, но, к сожалению, мест нет.' },
-		{ track: 'Лирикал Лонг', album: 'singl_lirikal', text: 'Мои мысли — моё сокровище, больше нехуй терять.' },
-		{ track: 'Лирикал Лонг', album: 'singl_lirikal', text: 'Я не верю тебе больше, моя девочка-кошка. Мысли только о пошлом, пою ей будто Сидоджи.' },
-		{ track: 'Лирикал Лонг', album: 'singl_lirikal', text: 'С тобой вышел в ноль и стал не нужен. Я не хотел обижать тебя, киса.' },
-
-		{ track: 'Неудачный фильм', album: 'singl_neudach', text: 'Мозг – это не источник наших мыслей, а только телефонная станция.' },
-		{ track: 'Неудачный фильм', album: 'singl_neudach', text: 'Я оставляю за собой лишь пыль. И солнце солнечными тряпками стирает этот неудачный фильм.' },
-		{ track: 'Неудачный фильм', album: 'singl_neudach', text: 'Ожидания, мысли, возраст. Фантазия, миг, детство, звезды.' },
-		{ track: 'Неудачный фильм', album: 'singl_neudach', text: 'Речь идёт не, даже не о физическом органе. Нет физического органа, который бы был ответственен или был источником мыслей.' },
-
-		{ track: 'Оттепель', album: 'singl_ottepel', text: 'Мир расцветает по весне. Оттепель подарит нам улыбки.' },
-		{ track: 'Оттепель', album: 'singl_ottepel', text: 'Всё ищешь у жизни смысл. Поверь мне: его там нет.' },
-		{ track: 'Оттепель', album: 'singl_ottepel', text: 'Меня тащит в три направления: любить, делать песни и ждать.' },
-		{ track: 'Оттепель', album: 'singl_ottepel', text: 'Я хочу, чтобы просто ты была рядом. Я так не писал, но и не каждый день снег.' },
-
-		{ track: 'Пойдём со мной', album: 'singl_poidem', text: 'Раз, два, три, моё солнце. Пойдём лучше со мной: покажу тебе звёзды.' },
-		{ track: 'Пойдём со мной', album: 'singl_poidem', text: 'Танцуем, будто утро никогда не начнётся.' },
-		{ track: 'Пойдём со мной', album: 'singl_poidem', text: 'Эта ночь будет долгой. Я украду луну для тебя, если придётся.' },
-		{ track: 'Пойдём со мной', album: 'singl_poidem', text: 'Тебе никогда больше не будет больно. У собачки боли, у кошечки боли, но не у тебя.' },
-
-		{ track: 'Привет', album: 'singl_privet', text: 'Да пошёл-ка ты нахуй! Шёл бы-ка ты нахуй! Не надо мне звонить.' },
-		{ track: 'Привет', album: 'singl_privet', text: 'С кем бы хотел и так могу в жизни поговорить.' },
-		{ track: 'Привет', album: 'singl_privet', text: '«Передай мне привет!» — внезапно нагрянет громом голос тринадцати лет.' },
-		{ track: 'Привет', album: 'singl_privet', text: 'Каждый день мой трезвонит телефон. Кто звонит и почему? Кому, зачем и для чего?' },
-
-		{ track: 'СТАРАЯ ПАНК ВОЛНА', album: 'singl_pank', text: 'Сделали вам пушку, и это Тульский Токарев, bang!' },
-		{ track: 'СТАРАЯ ПАНК ВОЛНА', album: 'singl_pank', text: 'Со Славой научили жизни вас, как тик-токи с Кащеем.' },
-		{ track: 'СТАРАЯ ПАНК ВОЛНА', album: 'singl_pank', text: 'Мы выдаём на «белый клык» всем лондонским интеллигентам, pow!' },
-		{ track: 'СТАРАЯ ПАНК ВОЛНА', album: 'singl_pank', text: 'Пиздуй под юбку, Мазеллов — новый Мэддисон. Я с королём Твича, а значит нахуй осуждение.' },
-
-		{ track: 'Увидимся следующим летом', album: 'singl_letom', text: 'Прошу увидимся летом, увидимся летом. И я прошу тебя, Ким, что увидимся следующим летом.' },
-		{ track: 'Увидимся следующим летом', album: 'singl_letom', text: 'Знаю увидимся летом, книга судьбы ведь так соткана.' },
-		{ track: 'Увидимся следующим летом', album: 'singl_letom', text: 'Прожигая лето, время уходит. Давай мы в следующий раз, это повторим, чтобы вспомнить.' },
-		{ track: 'Увидимся следующим летом', album: 'singl_letom', text: 'Все цепи загадок выводят за звёзды. В задумчивый мир аки космос.' },
-
-		{ track: 'Это моя весна', album: 'singl_vesna', text: 'Это моя весна. Она нас не забыла, пусть сияет звезда.' },
-		{ track: 'Это моя весна', album: 'singl_vesna', text: 'Улыбайся мечтам - это моя весна.' },
-		{ track: 'Это моя весна', album: 'singl_vesna', text: 'Ананасовый сок я выпиваю с утра. Она знает, зачем я улыбаюсь всегда.' },
-		{ track: 'Это моя весна', album: 'singl_vesna', text: 'Девочка, ай по весне. Вся расцветает подснежником.' },
-
-		{ track: 'айзек', album: 'singl_ajzek', text: 'Либо солнечный свет, либо тёмная тьма, либо да, либо нет, либо ты, либо я.' },
-		{ track: 'айзек', album: 'singl_ajzek', text: 'Чтобы их след даже пальцами на стекле не остался никак. Чистота идеальна.' },
-		{ track: 'айзек', album: 'singl_ajzek', text: 'Коли всё правда, я бы зуб дал, центральный правый, на выброс.' },
-		{ track: 'айзек', album: 'singl_ajzek', text: 'Да, уходит время настолько, что муки совести тянут возраст в Дальний Восток.' },
-
-		{ track: 'бес концепта', album: 'singl_beskont', text: 'Я убью тебя лишь ради песни в альбом. Любовь, как секрет без рецептов.' },
-		{ track: 'бес концепта', album: 'singl_beskont', text: 'Вдохновение — прикольная тема. Ведь не уйдет как ты, нужна лишь пища для дела.' },
-		{ track: 'бес концепта', album: 'singl_beskont', text: 'Моя любовь — это абстракция. Насколько далеко занесло.' },
-		{ track: 'бес концепта', album: 'singl_beskont', text: 'Ты бледна как январский снег. Волосы спутались с пылью.' },
-
-		{ track: 'бэйслайн бизнес', album: 'singl_bejs', text: 'Это бэйслайн бизнес — это тест на крысу. Ты не вывез, вайбик минус, вперёд ногами вынос.' },
-		{ track: 'бэйслайн бизнес', album: 'singl_bejs', text: 'Надо траву, он и скосит и вырубит.' },
-		{ track: 'бэйслайн бизнес', album: 'singl_bejs', text: 'Да, ты делаешь набор слов, но чтобы показывать уебанам, как надо на бит наваливать.' },
-		{ track: 'бэйслайн бизнес', album: 'singl_bejs', text: 'Мы VSRAP и GNG банда. Меллстрою депнули хуём по гланды, правда.' },
-
-		{ track: 'главная тайна неба', album: 'singl_tajna', text: 'Главной тайною неба станет: есть ли хоть где-то справедливость здесь и сейчас?' },
-		{ track: 'главная тайна неба', album: 'singl_tajna', text: 'Нет людей без ошибок. И снова захочется жить нам.' },
-		{ track: 'главная тайна неба', album: 'singl_tajna', text: 'Главной тайною неба в духе старых заветов мысль: кто же плохой из нас?' },
-		{ track: 'главная тайна неба', album: 'singl_tajna', text: 'Работа — не волк, и в лес не бежит. Стоя на стыке двоих тех хтонических плит.' },
-
-		{ track: 'дисс на некоглая', album: 'singl_diss', text: 'Деньги дают власть убрать с дороги уродов. Да, деньги дают власть, но не в руках долбоёба.' },
-		{ track: 'дисс на некоглая', album: 'singl_diss', text: 'Коля, скажи: «Мяу», скажи, что мы подсосы. Ведь легче машнить, чем отвечать на вопросы.' },
-		{ track: 'дисс на некоглая', album: 'singl_diss', text: 'Некоглай пиздел на наших, подсосы, хорош ныть. У Коли нет родаков, чё, забыли их накрутить?' },
-		{ track: 'дисс на некоглая', album: 'singl_diss', text: 'Некоглай ради онлайна смеялся над немощным. Хайпишь на инвалиде, ветераны, вы следующие?' },
-
-		{ track: 'игрушки', album: 'singl_igrushki', text: 'Если полюбить — даже игрушка оживёт.' },
-		{ track: 'игрушки', album: 'singl_igrushki', text: 'Любить больше не нужно, и наравне с игрушками стало быть, бездушны, как на листах.' },
-		{ track: 'игрушки', album: 'singl_igrushki', text: 'Осколки юности с нами, что ранят, мать, не горюй. Чтобы сколько-то лет прождав в этой сказке до «I love you».' },
-		{ track: 'игрушки', album: 'singl_igrushki', text: 'И мир, как будто созданный был тогда лишь для нас. И любимые родители младше, чем я сейчас.' },
-
-		{ track: 'лоу-фай детка', album: 'singl_lofi', text: 'Я мог бы покончить со всем, но проще прикончить тебя.' },
-		{ track: 'лоу-фай детка', album: 'singl_lofi', text: 'Записи старых кассет, но мы давно не семья.' },
-		{ track: 'лоу-фай детка', album: 'singl_lofi', text: 'Ты бы хотела пропасть в ночи при мерцании плеяд.' },
-		{ track: 'лоу-фай детка', album: 'singl_lofi', text: 'У нас нет будущего, словно мы в России. Да, я пессимист и вижу темноту, как Кот Базилио.' },
-
-		{ track: 'лучшее позади', album: 'singl_luchshee', text: 'Спойлер: этот свет в конце туннеля — просто зеркало.' },
-		{ track: 'лучшее позади', album: 'singl_luchshee', text: 'И лучшее позади.' },
-		{ track: 'лучшее позади', album: 'singl_luchshee', text: 'Я хотел бы быть роман-бестселлер. Но максимум — тёщин язык, анекдот недели.' },
-		{ track: 'лучшее позади', album: 'singl_luchshee', text: 'Жизнь и Смерть — просто меняем адреса. И больше ни к чему суетливо долгие проводы.' },
-
-		{ track: 'невыносимо', album: 'singl_nevynos', text: 'Здорово жить, но только невывозимо.' },
-		{ track: 'невыносимо', album: 'singl_nevynos', text: 'Я напишу о том, как весело было вместе с другими смотреть этот жизненный фильм.' },
-		{ track: 'невыносимо', album: 'singl_nevynos', text: 'Прикинул, здорово жизнь идёт, да. Лирический рэп — абсолют для меня, это всё.' },
-		{ track: 'невыносимо', album: 'singl_nevynos', text: 'Я ненавижу свои слова. Ведь по ним им видно, что я всё-таки слабак.' },
-
-		{ track: 'первый секс', album: 'singl_pervy', text: 'Первый секс, как майский дождь. Его не ждал, а он пришёл.' },
-		{ track: 'первый секс', album: 'singl_pervy', text: 'Мой красный друг — мой товарищ Ленин. Солдатом лёг, как в Мавзолее.' },
-		{ track: 'первый секс', album: 'singl_pervy', text: 'Мама говорит: давно я стал взрослым. Время получить ответы на свои вопросы.' },
-		{ track: 'первый секс', album: 'singl_pervy', text: 'Мне восемнадцать лет. У меня всё впереди, и меня ждёт успех.' },
-
-		{ track: 'пластырь', album: 'singl_plastyr', text: 'Стань мне раной на сердце, стань мне пластырем крепким.' },
-		{ track: 'пластырь', album: 'singl_plastyr', text: 'Наша ноша — пианино, что тащим по этажам наверх. И чем выше: ломаемся мы, меняется мир.' },
-		{ track: 'пластырь', album: 'singl_plastyr', text: 'Где-то там в небесном замке среди облаков я витаю и вроде чередом идёт своим всё.' },
-		{ track: 'пластырь', album: 'singl_plastyr', text: 'Из таких ощущений сотканный весь. Тут раз на раз не приходится, но пришёл и не весело, мне бы.' },
-
-		{ track: 'ракушки и ракушки', album: 'singl_rakushki', text: 'Переболи во мне, моя тоска. Переборю иль упаду назад.' },
-		{ track: 'ракушки и ракушки', album: 'singl_rakushki', text: 'Если чувство вины присутствует, значит не зря.' },
-		{ track: 'ракушки и ракушки', album: 'singl_rakushki', text: 'Пусть ветер доносит слухи о нас. Сколько было обдумано, столько вслух не рассказано.' },
-		{ track: 'ракушки и ракушки', album: 'singl_rakushki', text: 'Прошу, прости меня. Неважно, как и насколько давно, прости меня.' },
-
-		{ track: 'ты не поймёшь', album: 'singl_nepoim', text: 'Буду-буду улыбаться без причин. Буду отжигать, пока хватит сил!' },
-		{ track: 'ты не поймёшь', album: 'singl_nepoim', text: 'Петь о том, что умру молодым! Ты не поймёшь, почему…' },
-		{ track: 'ты не поймёшь', album: 'singl_nepoim', text: 'И бегу навстречу рассветам и закатам. Запоминая, что надо и не надо.' },
-		{ track: 'ты не поймёшь', album: 'singl_nepoim', text: 'Люди вокруг бу-бу-бу — я ставлю их на mute. Пока смотрят удивлённо, песенку пою.' },
-
-		{ track: 'чёртово колесо', album: 'singl_koleso', text: 'И что не получается, всё переварит сон. И пусть снова вращается чёртово колесо.' },
-		{ track: 'чёртово колесо', album: 'singl_koleso', text: 'Если ещё не отключаешься, значит, пока не всё. И тебе точно не пора, а финал твой будет весёлым.' },
-		{ track: 'чёртово колесо', album: 'singl_koleso', text: 'Чё опять не выходит? Где-то мы это слышали, видели. Забей, оставь и забудь — мотивашка друзей, родителей.' },
-		{ track: 'чёртово колесо', album: 'singl_koleso', text: 'Эй, полный мешок подарков, не трусь. В Новый год готов подарить вам каждому грусть.' },
-
-		{ track: 'я не боюсь ошибаться', album: 'singl_oshib', text: 'Я не боюсь ошибаться, я делаю, что хочу.' },
-		{ track: 'я не боюсь ошибаться', album: 'singl_oshib', text: 'Я объёбанный панк. Знакомьтесь, это мой фак, только не надо стесняться.' },
-		{ track: 'я не боюсь ошибаться', album: 'singl_oshib', text: 'Почему ты решил, что мне не похуй? Я ебу твои мысли прямо в жопу.' },
-		{ track: 'я не боюсь ошибаться', album: 'singl_oshib', text: 'По полю стекла, где колкими фразами пишет малюсик как мою мамку катал на пальце.' },
-
-		{ track: 'я устал', album: 'singl_ustal', text: 'Вырывая сердце из груди, всего себя я отдавал. Чтоб были мы — не я один, и обездвижено упал.' },
-		{ track: 'я устал', album: 'singl_ustal', text: 'Так хотел сказать тебе: «Я устал».' },
-		{ track: 'я устал', album: 'singl_ustal', text: 'Я ничегошеньки не понял от слова совсем. И из пустого в порожнее льются мысли бесцельно.' },
-		{ track: 'я устал', album: 'singl_ustal', text: 'Раз мне то бремя нести нельзя — бывай. И пусть затраченное время не компенсировать.' },
-
-		{ track: 'GDE PAPA LONGMIX', album: 'fit_gdepapa', text: 'Да, я родился проиграть, и, проиграв, я победил.' },
-		{ track: 'GDE PAPA LONGMIX', album: 'fit_gdepapa', text: 'Где папа? Папа здесь.' },
-		{ track: 'GDE PAPA LONGMIX', album: 'fit_gdepapa', text: 'Я не хотел иметь успех, хотел просто повыебонить. Но взорвало по звонку, будто пятнадцать лет готовил.' },
-		{ track: 'GDE PAPA LONGMIX', album: 'fit_gdepapa', text: 'Киннь меня, я не кубик льда, а безотцовщина. Трещина внутри, смотри, у нас есть чё-то общее.' },
-
-		{ track: 'БЕГАТЬ И ПАДАТЬ', album: 'fit_begat', text: 'Мы хотели бегать и падать. Мы на верном со старта.' },
-		{ track: 'БЕГАТЬ И ПАДАТЬ', album: 'fit_begat', text: 'Если тонуть, только до конца. С неба луч света, наша белая полоса.' },
-		{ track: 'БЕГАТЬ И ПАДАТЬ', album: 'fit_begat', text: 'Нам хотелось всё потрогать и проверить. Бесконечность комнат от меня не скроют двери.' },
-		{ track: 'БЕГАТЬ И ПАДАТЬ', album: 'fit_begat', text: 'Правильный путь? Нет такого, но праведный путь — выстрел в голову.' },
-
-		{ track: 'Мы зовем ее картинг', album: 'fit_karting', text: 'Я её не знаю: она чья подруга? Она будто картинг — ездила по кругу.' },
-		{ track: 'Мы зовем ее картинг', album: 'fit_karting', text: 'Моя тёлка не Луиджи, но рассыпала все колёса.' },
-		{ track: 'Мы зовем ее картинг', album: 'fit_karting', text: 'Где Ноар — гигант музыки, настоящий кит. Я чё, даже смог сделать припев на детройт бит?' },
-		{ track: 'Мы зовем ее картинг', album: 'fit_karting', text: 'Если я ебусь, значит, где-то землетрясение. Задел типа плечом — он получил сотрясение.' },
-
-		{ track: 'Уходи', album: 'fit_uhodi', text: 'Уходи, я потратил все деньги на хуету. Опять один, чтобы снова не чувствовать пустоту.' },
-		{ track: 'Уходи', album: 'fit_uhodi', text: 'Почему я по-новой ощущаю вину? Уходи, я снова встретил не ту.' },
-		{ track: 'Уходи', album: 'fit_uhodi', text: 'Снова печаль — отойти не могу. Не пожелал бы я даже врагу угодить в эту игру.' },
-		{ track: 'Уходи', album: 'fit_uhodi', text: 'Монохромный театр — от боли, что исходит с меня в яд явно подходит.' },
-
-		{ track: 'Черным по белому', album: 'fit_chernym', text: 'Пишу от руки чёрным по белому. Раскадровка серыми сценами.' },
-		{ track: 'Черным по белому', album: 'fit_chernym', text: 'Пустоту заполняя пробелами. Чёрным по белому, от части к целому.' },
-		{ track: 'Черным по белому', album: 'fit_chernym', text: 'Как в сиквеле, в камео персонаж умерший. Ошибки прошлого вернутся в будущем.' },
-		{ track: 'Черным по белому', album: 'fit_chernym', text: 'С мольберта убирая, что написано, чтобы вновь из ничего заполнить смыслами.' },
-
-		{ track: 'забыл умереть', album: 'fit_zabyl', text: 'На меня больно смотреть. Я забыл умереть зря.' },
-		{ track: 'забыл умереть', album: 'fit_zabyl', text: 'Мы забыли любить себя.' },
-		{ track: 'забыл умереть', album: 'fit_zabyl', text: 'Секс продаёт, ложь продаёт. Все предают, всех предают.' },
-		{ track: 'забыл умереть', album: 'fit_zabyl', text: 'А мне не надо много, надо больше, чем есть. На сколько же стоит того, что вложенных прожитых дней?' },
-
-		{ track: 'анабиоз', album: 'HOLOD', text: 'В анабиозе душе не согреться. Покуда жизнь — это просто инерция.' },
-		{ track: 'анабиоз', album: 'HOLOD', text: 'Я запрусь на замок, и до сердца не достучаться, не допереться.' },
-		{ track: 'анабиоз', album: 'HOLOD', text: 'Всё вокруг ужасает: развал и эталон. Этому — выйти, раз глянуть, поплакать и домой.' },
-		{ track: 'анабиоз', album: 'HOLOD', text: 'Е, я устал притворяться, что всё пиздато. Лишь новое пристанище боли — сердечный кратер.' },
-
-		{ track: 'жизненная', album: 'HOLOD', text: 'Так что уже сдохни, будь другом. От тебя же всё равно нет пользы никакой.' },
-		{ track: 'жизненная', album: 'HOLOD', text: 'Поступи хоть раз по-человечески, ну хоть к кому-то.' },
-		{ track: 'жизненная', album: 'HOLOD', text: 'Эта жизнь не стоит ничего, когда в тебе воедино сплелись говно и твой тупой характер.' },
-		{ track: 'жизненная', album: 'HOLOD', text: 'Все люди одинаковы, жизнь любого ценна. Но если мы с тобой похожи — я выпрыгну из окна.' },
-
-		{ track: 'красивая красота', album: 'HOLOD', text: 'Свет — это смерть, тьма — добро. Общество — плен, люди — зло.' },
-		{ track: 'красивая красота', album: 'HOLOD', text: 'Как вытащить из угла — от света рассыпется в прах.' },
-		{ track: 'красивая красота', album: 'HOLOD', text: 'Всё, что сокрытое от нас, — интересное, но опасно. Куда полезут дети сами, взрослый не полезет на спор.' },
-		{ track: 'красивая красота', album: 'HOLOD', text: 'Шум, будто все в умат. Ибо вдруг, прознав про тебя, люди разом сошли с ума.' },
-
-		{ track: 'мое имя (intro)', album: 'HOLOD', text: 'Искренность так красива, но людям — неубедительна.' },
-		{ track: 'мое имя (intro)', album: 'HOLOD', text: 'Моя песня, спасай хоть кого, раз меня самого ничего не спасает.' },
-		{ track: 'мое имя (intro)', album: 'HOLOD', text: 'Моё имя Илья, Илюша, я буду твоей игрушкой, если захочешь.' },
-		{ track: 'мое имя (intro)', album: 'HOLOD', text: 'В себя не верил никогда, так же, как и в меня родители.' },
-
-		{ track: 'снежинка', album: 'HOLOD', text: 'Растаешь — и насовсем, это огромный плюс. Знаю, когда ты вернёшься.' },
-		{ track: 'снежинка', album: 'HOLOD', text: 'Насильно чувства создать нельзя.' },
-		{ track: 'снежинка', album: 'HOLOD', text: 'Да пусть будет так! В тишине мне сердца ритм уже недавно настучал, что ты в совместный быт.' },
-		{ track: 'снежинка', album: 'HOLOD', text: 'Сквозь закостеневший асфальт пробирает, земля дрожит, и леденящий холод.' }
-
-];
-
-// ==========================================
-// ТАЙНЫЕ ЦИТАТЫ — вне основной дискографии
-// ==========================================	
-const secretQuotes = [
-    { track: 'Город под подошвой', album: 'secret', text: 'Дон ли, Волга ли течёт — котомку на плечо, боль в груди — там тайничок, открытый фомкой, не ключом.', note: 'был исполнен 4 октября 2026 года на питерском концерте MZLFF' },
-    { track: 'КАК ДЕЛА', album: 'secret', text: 'Забываешь поменять слова — не всё потеряно. Я говорю: «T9» — ты не понимаешь, где это.', note: 'самый популярный трек MZLFF вне дискографии' },
-    { track: 'Дисс на Генсуху', album: 'secret', text: 'Мне заплатили Эвелон и Рома, это так приятно, обоссал их за бабло, а Генсуху могу бесплатно.', note: 'один из самых известных диссов Ильи' },
-    { track: 'крыса', album: 'secret', text: 'Они всячески ранят, но в сердце сталь, в мозгу — я всё помню.', note: 'трек «крыса» не вышел в основной дискографии mzlff, но всё равно очень известный' },
-];
-
-// ==========================================
-// ОБЛОЖКИ И ФИТЫ
-// ==========================================
-const COVERS = {
-    "svetlayastorona": "covers/svetlayastorona.png",
-    "ADHD": "covers/ADHD.png",
-    "PHANTASMAGORIA": "covers/PHANTASMAGORIA.png",
-    "HOLOD": "covers/HOLOD.png",
-    "POTERYAN": "covers/POTERYAN.png",
-    "MAYAK": "covers/MAYAK.png",
-    "anemone": "covers/anemone.png",
-    "COSMOC": "covers/COSMOC.png",
-    "AKUST": "covers/AKUST.jpg",
-    "nichego": "covers/nichego.png",
-    "singl_140bpm": "covers/singl_140bpm.jpg",
-    "singl_atm3": "covers/singl_atm3.png",
-    "singl_atm4": "covers/singl_atm4.png",
-    "singl_autoban": "covers/singl_autoban.png",
-    "singl_fluv": "covers/singl_fluv.png",
-    "singl_rolls": "covers/singl_rolls.png",
-    "singl_tru3": "covers/singl_tru3.png",
-    "singl_catharsis": "covers/singl_catharsis.jpg",
-    "singl_bumazhny": "covers/singl_bumazhny.png",
-    "singl_burya": "covers/singl_burya.png",
-    "singl_abrikos": "covers/singl_abrikos.png",
-    "singl_grafik": "covers/singl_grafik.png",
-    "singl_tiktok": "covers/singl_tiktok.png",
-    "singl_kapel": "covers/singl_kapel.png",
-    "singl_lirikal": "covers/singl_lirikal.png",
-    "singl_neudach": "covers/singl_neudach.png",
-    "singl_ottepel": "covers/singl_ottepel.png",
-    "singl_poidem": "covers/singl_poidem.png",
-    "singl_privet": "covers/singl_privet.png",
-    "singl_pank": "covers/singl_pank.png",
-    "singl_letom": "covers/singl_letom.png",
-    "singl_vesna": "covers/singl_vesna.png",
-    "singl_ajzek": "covers/singl_ajzek.png",
-    "singl_beskont": "covers/singl_beskont.png",
-    "singl_bejs": "covers/singl_bejs.png",
-    "singl_tajna": "covers/singl_tajna.png",
-    "singl_diss": "covers/singl_diss.png",
-    "singl_igrushki": "covers/singl_igrushki.png",
-    "singl_lofi": "covers/singl_lofi.png",
-    "singl_luchshee": "covers/singl_luchshee.png",
-    "singl_nevynos": "covers/singl_nevynos.png",
-    "singl_pervy": "covers/singl_pervy.png",
-    "singl_plastyr": "covers/singl_plastyr.png",
-    "singl_rakushki": "covers/singl_rakushki.png",
-    "singl_nepoim": "covers/singl_nepoim.png",
-    "singl_koleso": "covers/singl_koleso.png",
-    "singl_oshib": "covers/singl_oshib.png",
-    "singl_ustal": "covers/singl_ustal.png",
-    "fit_gdepapa": "covers/fit_gdepapa.png",
-    "fit_begat": "covers/fit_begat.png",
-    "fit_karting": "covers/fit_karting.png",
-    "fit_uhodi": "covers/fit_uhodi.png",
-    "fit_chernym": "covers/fit_chernym.png",
-    "fit_zabyl": "covers/fit_zabyl.png",
-    "secret": "covers/secret.png"
-};
-const TRACK_INFO = {
-    "svetlayastorona|Почемучка (feat. Екатерина Яшникова)": { feats: ["Екатерина Яшникова (Ekaterina Yashnikova)"] },
-    "svetlayastorona|Ящики (feat. BOOKER)": { feats: ["BOOKER"] },
-    "svetlayastorona|hate core": { feats: ["Слава КПСС (Slava KPSS)", "CMH"] },
-    "svetlayastorona|Не создать цветы (feat. playingtheangel)": { feats: ["playingtheangel"] },
-    "svetlayastorona|Другая сторона (feat. STED.D)": { feats: ["STED.D"] },
-    "ADHD|мы не станем другими": { feats: ["GSPD"] },
-    "ADHD|TRINITY CYPHER": { feats: ["ИзТолпы (IzTolpy)", "ксх (kskh)"] },
-    "HOLOD|анабиоз": { feats: ["STED.D"] },
-    "POTERYAN|оставь себе": { feats: ["pyrokinesis"] },
-    "MAYAK|ты рядом": { feats: ["qwiza"] },
-    "anemone|однополярности": { feats: ["STED.D"] },
-    "COSMOC|Противоречие выборов": { feats: ["ксх (kskh)"] },
-    "singl_140bpm|140 BPM CYPHER (2024)": { feats: ["OttO (RUS)", "Никита Мастяк (Nikita Mastyak)", "ИзТолпы (IzTolpy)", "edik_kingsta"] },
-    "singl_atm3|ATM 3": { feats: ["BEATCASTER","MONRAU","Золотое Перо (Zolotoe Pero)","Skurt","ФРИК ПАТИ (FREAK PARTY)","BOOKER","DELORENZY","ЮГ 404 (UG 404)","N.MASTEROFF"] },
-    "singl_atm4|ATM 4": { feats: ["Слава КПСС (Slava KPSS)","BOOKER","CMH"] },
-    "singl_rolls|Rolls Royce Phantom": { feats: ["Skurt"] },
-    "singl_catharsis|catharsis": { feats: ["CMH"] },
-    "singl_burya|Буря, метель и мгла": { feats: ["STED.D"] },
-    "singl_tiktok|Девочка с тиктока": { feats: ["ШАРЫ (SHARY)"] },
-    "singl_lirikal|Лирикал Лонг": { feats: ["Rauf Hattab","Кукиш с Хаслом (Kukish s Khaslom)","solovey (RUS)"] },
-    "singl_poidem|Пойдём со мной": { feats: ["ИзТолпы (IzTolpy)"] },
-    "singl_pank|СТАРАЯ ПАНК ВОЛНА": { feats: ["Слава КПСС (Slava KPSS)"] },
-    "singl_bejs|бэйслайн бизнес": { feats: ["CMH"] },
-    "singl_nevynos|невыносимо": { feats: ["Слава КПСС (Slava KPSS)"] },
-    "singl_oshib|я не боюсь ошибаться": { feats: ["СЕРЕГА ПИРАТ (SEREGA PIRAT)"] },
-    "fit_gdepapa|GDE PAPA LONGMIX": { main: "BOOKER", feats: ["CMH","Слава КПСС (Slava KPSS)"] },
-    "fit_begat|БЕГАТЬ И ПАДАТЬ": { main: "КУОК (KYOK)", feats: [] },
-    "fit_karting|Мы зовем ее картинг": { main: "Где Ноар (Gde Noar)", feats: ["Лекс 1707 (Lex 1707)"] },
-    "fit_uhodi|Уходи": { main: "ФРИК ПАТИ (FREAK PARTY)", feats: [] },
-    "fit_chernym|Черным по белому": { main: "СТИНТ (THE STINT)", feats: [] },
-    "fit_zabyl|забыл умереть": { main: "playingtheangel", feats: [] }
-};
-
-// ==========================================
-// ХЕЛПЕРЫ
-// ==========================================
-const LS_COVERS = 'mzlff:covers';
-const ARTIST_RE = /mzlff/i;
-let coverCache = {};
-try { coverCache = JSON.parse(localStorage.getItem(LS_COVERS) || '{}') || {}; } catch (e) {}
-function saveCoverCache() { try { localStorage.setItem(LS_COVERS, JSON.stringify(coverCache)); } catch (e) {} }
-
-function esc(str) {
-    return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function parseTrack(raw) {
-    const m = raw.match(/\s*[\(\[]\s*(?:feat\.?|ft\.?|при уч\.?|совм\.? с)\s+([^)\]]+)[\)\]]\s*$/i);
-    if (!m) return { title: raw, feats: [] };
-    const feats = m[1].split(/\s*(?:,|&|×|\s+x\s+|\s+и\s+|\s+and\s+)\s*/i).map(x => x.trim()).filter(Boolean);
-    return { title: raw.slice(0, m.index).trim(), feats };
-}
-function shortName(n) {
-    const s = String(n || '').trim();
-    return s.replace(/\s*[\(\[][^)\]]*[\)\]]\s*$/, '').trim() || s;
-}
-function trackMeta(quote) {
-    const parsed = parseTrack(quote.track);
-    const info = TRACK_INFO[quote.album + '|' + quote.track] || {};
-    const isFit = quote.album.startsWith('fit_');
-    const feats = [...new Set((info.feats && info.feats.length ? info.feats : parsed.feats).map(shortName))].filter(n => n && !ARTIST_RE.test(n));
-    return { title: parsed.title, feats, main: shortName(info.main || ''), isFit };
-}
-function featsHtml(quote) {
-    const m = trackMeta(quote);
-    const parts = [];
-    if (m.isFit) {
-        parts.push('<span class="badge">ФИТ</span>' + (m.main ? 'трек <b>' + esc(m.main) + '</b>' : 'mzlff в гостях'));
-        if (m.feats.length) parts.push('с ' + m.feats.map(n => '<b>' + esc(n) + '</b>').join(', '));
-    } else if (m.feats.length) {
-        parts.push('<span class="badge">FEAT</span>' + m.feats.map(n => '<b>' + esc(n) + '</b>').join(', '));
-    }
-    return parts.join(' · ');
-}
-function albumLabel(quote) {
-    const a = albums[quote.album];
-    if (a && a.title) return a.title;
-    if (quote.album && (quote.album.startsWith('singl_') || quote.album.startsWith('fit_'))) {
-        const t = quote.track ? parseTrack(quote.track).title : '';
-        return t || (quote.album.startsWith('fit_') ? 'Фит' : 'Сингл');
-    }
-    return quote.album || '';
-}
-
-function jsonp(url, timeout = 6000) {
-    return new Promise((resolve, reject) => {
-        const cb = '__jp' + Math.random().toString(36).slice(2);
-        const el = document.createElement('script');
-        const done = (fn, v) => { delete window[cb]; el.remove(); clearTimeout(t); fn(v); };
-        const t = setTimeout(() => done(reject, new Error('timeout')), timeout);
-        window[cb] = data => done(resolve, data);
-        el.onerror = () => done(reject, new Error('error'));
-        el.src = url + (url.includes('?') ? '&' : '?') + 'output=jsonp&callback=' + cb;
-        document.head.appendChild(el);
-    });
-}
-async function liveItunes(term) {
-    const r = await fetch('https://itunes.apple.com/search?entity=song&limit=8&term=' + encodeURIComponent('mzlff ' + term));
-    const j = await r.json();
-    const hit = (j.results || []).find(x => ARTIST_RE.test(x.artistName || '') && x.artworkUrl100);
-    return hit ? hit.artworkUrl100.replace(/\d+x\d+bb/, '600x600bb') : '';
-}
-async function liveDeezer(term) {
-    const j = await jsonp('https://api.deezer.com/search?q=' + encodeURIComponent('artist:"mzlff" ' + term));
-    const hit = (j.data || []).find(x => x.album && x.album.cover_big);
-    return hit ? hit.album.cover_big : '';
-}
-let liveQueue = Promise.resolve();
-const inflight = {};
-const LOCAL_DIR = 'covers/';
-const LOCAL_EXTS = ['png', 'jpg', 'jpeg', 'webp'];
-const localCache = {};
-function probeImg(url) {
-    return new Promise(resolve => {
-        const im = new Image();
-        im.onload = () => resolve(true);
-        im.onerror = () => resolve(false);
-        im.src = url;
-    });
-}
-function localCover(key) {
-    if (key in localCache) return localCache[key];
-    const cands = [];
-    const known = COVERS[key];
-    if (known && !/^(https?:)?\/\//i.test(known)) cands.push(known);
-    for (const ext of LOCAL_EXTS) {
-        const p = LOCAL_DIR + key + '.' + ext;
-        if (!cands.includes(p)) cands.push(p);
-    }
-    return localCache[key] = (async () => {
-        for (const c of cands) if (await probeImg(c)) return c;
-        return '';
+    <h1 class="title">
+      Сайт переехал на<br>
+      <span class="accent">новый домен</span>
+    </h1>
+
+    <p class="subtitle">
+      Все цитаты, достижения и каталог теперь доступны по новому адресу.
+    </p>
+
+    <a class="domain-badge" href="https://mzlff-citations.netlify.app/" id="newDomainLink">
+      https://mzlff-citations.netlify.app/
+    </a>
+
+    <br>
+
+    <a class="redirect-btn" href="https://mzlff-citations.netlify.app/" id="redirectButton">
+      <span>Перейти на новый сайт</span>
+      <span class="arrow" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M4 12 12 4M5 4h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+      </span>
+    </a>
+
+    <p class="timer-note">
+      Автоматический переход через <span class="seconds" id="countdown">10</span> сек.
+    </p>
+
+    <div class="legacy-note">
+      <strong>Старый адрес</strong> больше не обновляется.<br>
+      Пожалуйста, обновите закладки.
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var NEW_URL = 'https://mzlff-citations.netlify.app/';
+      var SECONDS = 10;
+      var countdownEl = document.getElementById('countdown');
+      var redirectBtn = document.getElementById('redirectButton');
+      var domainLink = document.getElementById('newDomainLink');
+
+      // Убедимся, что ссылки ведут на правильный URL (на случай, если константа изменится)
+      redirectBtn.href = NEW_URL;
+      domainLink.href = NEW_URL;
+
+      // Обратный отсчёт
+      var remaining = SECONDS;
+      countdownEl.textContent = remaining;
+
+      var timer = setInterval(function() {
+        remaining -= 1;
+        countdownEl.textContent = remaining > 0 ? remaining : 0;
+        if (remaining <= 0) {
+          clearInterval(timer);
+          // Перенаправляем
+          window.location.replace(NEW_URL);
+        }
+      }, 1000);
+
+      // Если пользователь нажал на кнопку или ссылку — очищаем таймер и переходим (переход произойдёт сам)
+      function goToNewSite(e) {
+        clearInterval(timer);
+        // Не предотвращаем действие по умолчанию, чтобы ссылка сработала.
+        // Но если это кнопка (a), браузер сам перейдёт.
+        // Дополнительно можно сделать replace, но не обязательно.
+      }
+
+      redirectBtn.addEventListener('click', function(e) {
+        clearInterval(timer);
+        // Даём браузеру перейти по ссылке; на всякий случай — replace
+        e.preventDefault();
+        window.location.replace(NEW_URL);
+      });
+
+      domainLink.addEventListener('click', function(e) {
+        clearInterval(timer);
+        e.preventDefault();
+        window.location.replace(NEW_URL);
+      });
+
+      // Если страница восстанавливается из bfcache, перезапускаем таймер? Нет, просто оставим.
+      // При загрузке из кеша всё сбросится.
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+          // Если вернулись назад, можно перезапустить отсчёт, но не обязательно.
+          // Оставим как есть — пользователь сам увидит кнопку.
+        }
+      });
     })();
-}
-function resolveCover(quote) {
-    const key = quote.album;
-    const a = albums[key] || {};
-    if (a.cover) return Promise.resolve(a.cover);
-    return localCover(key).then(local => local || resolveRemoteCover(quote));
-}
-function resolveRemoteCover(quote) {
-    const key = quote.album;
-    const a = albums[key] || {};
-    const known = (/^(https?:)?\/\//i.test(COVERS[key] || '') ? COVERS[key] : '') || coverCache[key];
-    if (known) return Promise.resolve(known);
-    if (coverCache[key] === '') return Promise.resolve('');
-    if (inflight[key]) return inflight[key];
-    const term = (a.title || parseTrack(quote.track).title).replace(/\s*\(.*?\)\s*/g, ' ').trim();
-    inflight[key] = liveQueue = liveQueue.then(async () => {
-        let url = '';
-        for (const fn of [liveItunes, liveDeezer]) {
-            try { url = await fn(term); } catch (e) {}
-            if (url) break;
-        }
-        coverCache[key] = url;
-        saveCoverCache();
-        await new Promise(r => setTimeout(r, 350));
-        return url;
-    });
-    return inflight[key];
-}
-function setImg(img, url) {
-    if (!url) { img.hidden = true; return; }
-    img.onerror = () => { img.hidden = true; };
-    img.onload = () => { img.hidden = false; };
-    img.src = url;
-}
-
-// ==========================================
-// ЛИМИТЫ / SEEN
-// ==========================================
-const DAILY_LIMIT = 20;
-const LS_LIMIT = 'mzlff:limit';
-const LS_SEEN  = 'mzlff:seen';
-
-function todayKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function loadLimitState() {
-    try {
-        const raw = JSON.parse(localStorage.getItem(LS_LIMIT) || 'null');
-        if (raw && raw.date === todayKey()) return raw;
-    } catch (e) {}
-    return { date: todayKey(), count: 0 };
-}
-function saveLimitState(s) { try { localStorage.setItem(LS_LIMIT, JSON.stringify(s)); } catch (e) {} }
-function loadSeen() {
-    try {
-        const raw = JSON.parse(localStorage.getItem(LS_SEEN) || 'null');
-        if (raw && raw.date === todayKey() && Array.isArray(raw.indices)) return raw;
-    } catch (e) {}
-    return { date: todayKey(), indices: [] };
-}
-function saveSeen(s) { try { localStorage.setItem(LS_SEEN, JSON.stringify(s)); } catch (e) {} }
-
-let limitState = loadLimitState();
-let seenState  = loadSeen();
-
-// ==========================================
-// ПРОВЕРКА ДОСТИЖЕНИЙ
-// ==========================================
-function getAlbumQuoteIndices(albumKey) {
-    const indices = [];
-    quotes.forEach((q, i) => { if (q.album === albumKey) indices.push(i); });
-    secretQuotes.forEach((q, i) => { if (q.album === albumKey) indices.push(quotes.length + i); });
-    return indices;
-}
-
-function checkAchievements() {
-    const seenSet = new Set(seenState.indices);
-    let anyNew = false;
-
-    for (const [albumKey, ach] of Object.entries(achievements)) {
-        if (unlockedAchievements[albumKey]) continue;
-
-        const indices = getAlbumQuoteIndices(albumKey);
-        if (indices.length === 0) continue;
-
-        const allSeen = indices.every(i => seenSet.has(i));
-        if (!allSeen) continue;
-
-        unlockedAchievements[albumKey] = true;
-        anyNew = true;
-        showAchievementToast(ach);
-    }
-
-    if (anyNew) saveAchievements(unlockedAchievements);
-}
-
-let toastTimer = null;
-function showAchievementToast(ach) {
-    let toast = document.querySelector('.ach-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.className = 'ach-toast';
-        toast.innerHTML = `
-            <svg class="ach-toast-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2l2.6 6.2 6.7.5-5.1 4.4 1.6 6.5L12 16.9 6.2 19.6l1.6-6.5-5.1-4.4 6.7-.5L12 2z"
-                      stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            </svg>
-            <span class="ach-toast-text">
-                <span class="ach-toast-label">Достижение открыто</span>
-                <span class="ach-toast-name"></span>
-                <span class="ach-toast-desc"></span>
-            </span>`;
-        document.body.appendChild(toast);
-    }
-    toast.querySelector('.ach-toast-name').textContent = ach.name;
-    toast.querySelector('.ach-toast-desc').textContent = ach.desc;
-
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
-}
-
-// ==========================================
-// DOM
-// ==========================================
-const button       = document.querySelector('#quote-button');
-const card         = document.querySelector('#quote-card');
-const quoteText    = document.querySelector('#quote-text');
-const trackName    = document.querySelector('#track-name');
-const albumName    = document.querySelector('#album-name');
-const listenLink   = document.querySelector('#listen-link');
-const counterEl    = document.querySelector('#counter');
-const resetTimerEl = document.querySelector('#reset-timer');
-const coverImg     = document.querySelector('#cover-img');
-const featsEl      = document.querySelector('#feats');
-const secretMark   = document.querySelector('#secret-mark');
-const catalogBtn   = document.querySelector('#catalog-button');
-const catalogModal = document.querySelector('#catalog-modal');
-const catalogClose = document.querySelector('#catalog-close');
-const catalogBody  = document.querySelector('#catalog-body');
-const catalogSearch= document.querySelector('#catalog-search');
-
-// ==========================================
-// СЧЁТЧИК
-// ==========================================
-function updateCounter() {
-    const remainingDaily = Math.max(0, DAILY_LIMIT - limitState.count);
-    const totalQuotes    = quotes.length + secretQuotes.length;
-    const remainingAll   = Math.max(0, totalQuotes - seenState.indices.length);
-
-    counterEl.innerHTML = `Сегодня осталось: <strong>${remainingDaily}</strong> из ${DAILY_LIMIT}`;
-    counterEl.classList.toggle('limit', remainingDaily === 0 || remainingAll === 0);
-
-    const disabled = remainingDaily === 0 || remainingAll === 0;
-    button.disabled = disabled;
-    button.style.opacity = disabled ? .4 : 1;
-    button.style.cursor  = disabled ? 'not-allowed' : 'pointer';
-}
-
-// ==========================================
-// ТАЙМЕР ДО ОБНОВЛЕНИЯ (до полуночи)
-// ==========================================
-function msUntilReset() {
-    const now = new Date();
-    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
-    return next - now;
-}
-
-function updateResetTimer() {
-    const ms = msUntilReset();
-    const totalSec = Math.max(0, Math.floor(ms / 1000));
-
-    const h = Math.floor(totalSec / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-
-    const pad = n => String(n).padStart(2, '0');
-
-    if (totalSec <= 0) {
-        resetTimerEl.innerHTML = 'Обновление…';
-    } else {
-        resetTimerEl.innerHTML =
-            `Обновление через <strong>${pad(h)}:${pad(m)}:${pad(s)}</strong>`;
-    }
-}
-
-setInterval(updateResetTimer, 1000);
-updateResetTimer();
-
-// ==========================================
-// ВЫБОР ЦИТАТЫ (обычные + тайные)
-// ==========================================
-const SECRET_CHANCE = 0.10; // 10% шанс, что попадётся тайная
-
-function getQuote(globalIndex) {
-    if (globalIndex < quotes.length) return quotes[globalIndex];
-    return secretQuotes[globalIndex - quotes.length];
-}
-
-function pickQuoteIndex() {
-    const secretOffset = quotes.length;
-
-    const usedRegular = new Set(seenState.indices.filter(i => i < secretOffset));
-    const availableRegular = [];
-    for (let i = 0; i < quotes.length; i++) {
-        if (!usedRegular.has(i)) availableRegular.push(i);
-    }
-
-    const usedSecret = new Set(seenState.indices.filter(i => i >= secretOffset));
-    const availableSecret = [];
-    for (let i = 0; i < secretQuotes.length; i++) {
-        const g = secretOffset + i;
-        if (!usedSecret.has(g)) availableSecret.push(g);
-    }
-
-    if (availableRegular.length === 0 && availableSecret.length === 0) return -1;
-
-    if (availableSecret.length > 0 && Math.random() < SECRET_CHANCE) {
-        return availableSecret[Math.floor(Math.random() * availableSecret.length)];
-    }
-
-    if (availableRegular.length > 0) {
-        return availableRegular[Math.floor(Math.random() * availableRegular.length)];
-    }
-
-    return availableSecret[Math.floor(Math.random() * availableSecret.length)];
-}
-
-// ==========================================
-// ПОКАЗ ЦИТАТЫ
-// ==========================================
-button.addEventListener('click', () => {
-    // Лимит исчерпан
-    if (limitState.count >= DAILY_LIMIT) {
-        quoteText.textContent = 'Лимит на сегодня исчерпан. Возвращайся после обновления.';
-        trackName.hidden = true;
-        albumName.hidden = true;
-        featsEl.hidden = true;
-        secretMark.hidden = true;
-        coverImg.hidden = true;
-        listenLink.href = '#';
-        listenLink.style.display = 'none';
-        card.hidden = false;
-        card.classList.remove('dropping');
-        void card.offsetWidth;
-        card.classList.add('dropping');
-        return;
-    }
-
-    const index = pickQuoteIndex();
-
-    // Все цитаты закончились
-    if (index < 0) {
-        quoteText.textContent = 'Все цитаты открыты. Возвращайся позже.';
-        trackName.hidden = true;
-        albumName.hidden = true;
-        featsEl.hidden = true;
-        secretMark.hidden = true;
-        coverImg.hidden = true;
-        listenLink.href = '#';
-        listenLink.style.display = 'none';
-        card.hidden = false;
-        card.classList.remove('dropping');
-        void card.offsetWidth;
-        card.classList.add('dropping');
-        return;
-    }
-
-    listenLink.style.display = '';
-
-    seenState.indices.push(index);
-    saveSeen(seenState);
-    limitState.count += 1;
-    saveLimitState(limitState);
-    updateCounter();
-    checkAchievements();
-
-    const quote = getQuote(index);
-    const isSecret = index >= quotes.length;
-    quoteText.textContent = '«' + quote.text + '»';
-
-    const meta = trackMeta(quote);
-    const albumText = albumLabel(quote);
-    const sameName = meta.title === albumText && meta.title !== 'Космоцветок';
-
-    if (sameName) {
-        trackName.textContent = '';
-        trackName.hidden = true;
-        albumName.textContent = albumText;
-        albumName.hidden = false;
-    } else {
-        trackName.textContent = meta.title;
-        trackName.hidden = false;
-        albumName.textContent = albumText;
-        albumName.hidden = false;
-    }
-
-    const albumData = albums[quote.album];
-    listenLink.href = albumData ? albumData.url : '#';
-
-    const fh = featsHtml(quote);
-    featsEl.innerHTML = fh;
-    featsEl.hidden = !fh;
-
-    secretMark.hidden = !isSecret;
-
-    coverImg.hidden = true;
-    resolveCover(quote).then(url => {
-        if (trackName.textContent === meta.title || sameName) setImg(coverImg, url);
-    });
-
-    card.hidden = false;
-    card.classList.remove('dropping');
-    void card.offsetWidth;
-    card.classList.add('dropping');
-});
-
-// ==========================================
-// КАТАЛОГ — аккордеон по альбомам
-// ==========================================
-let openAlbumKey = null;
-
-function buildCatalog() {
-    const map = new Map();
-
-    quotes.forEach((quote, i) => {
-        if (!map.has(quote.album)) map.set(quote.album, new Map());
-        const tracks = map.get(quote.album);
-        if (!tracks.has(quote.track)) tracks.set(quote.track, []);
-        tracks.get(quote.track).push(i);
-    });
-
-    secretQuotes.forEach((quote, i) => {
-        const globalIdx = quotes.length + i;
-        if (!map.has(quote.album)) map.set(quote.album, new Map());
-        const tracks = map.get(quote.album);
-        if (!tracks.has(quote.track)) tracks.set(quote.track, []);
-        tracks.get(quote.track).push(globalIdx);
-    });
-
-    return map;
-}
-function orderedAlbumKeys(catalog) {
-    const known = Object.keys(albums).filter(k => catalog.has(k));
-    const rest  = [...catalog.keys()].filter(k => !known.includes(k));
-    return [...known, ...rest];
-}
-function plural(n, one, few, many) {
-    const m10 = n % 10, m100 = n % 100;
-    if (m10 === 1 && m100 !== 11) return one;
-    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
-    return many;
-}
-
-function renderAchievementsBar() {
-    const existing = document.querySelector('.achievements-bar');
-    if (existing) existing.remove();
-
-    const total = Object.keys(achievements).length;
-    const unlocked = Object.keys(achievements).filter(k => unlockedAchievements[k]).length;
-
-    const bar = document.createElement('div');
-    bar.className = 'achievements-bar';
-
-    let html = `<span class="ach-title">Достижения ${unlocked}/${total}</span>`;
-
-    for (const [key, ach] of Object.entries(achievements)) {
-        const isUnlocked = !!unlockedAchievements[key];
-        const cls = isUnlocked ? 'unlocked' : 'locked';
-        const icon = isUnlocked
-            ? `<svg class="ach-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                   <path d="M12 2l2.6 6.2 6.7.5-5.1 4.4 1.6 6.5L12 16.9 6.2 19.6l1.6-6.5-5.1-4.4 6.7-.5L12 2z"
-                         stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-               </svg>`
-            : `<svg class="ach-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                   <path d="M4 7V5a4 4 0 118 0v2M3 7h10v7H3z"
-                         stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-               </svg>`;
-        html += `<span class="ach-badge ${cls}" title="${esc(ach.desc)}">${icon}${esc(ach.name)}</span>`;
-    }
-
-    bar.innerHTML = html;
-
-    const modalBox = document.querySelector('.modal-box');
-    const body = document.querySelector('#catalog-body');
-    modalBox.insertBefore(bar, body);
-}
-
-function renderCatalog(filter = '') {
-    const catalog = buildCatalog();
-    const q = filter.trim().toLowerCase();
-    let html = '';
-    let shownAlbums = 0;
-
-    for (const albumKey of orderedAlbumKeys(catalog)) {
-        const tracks = catalog.get(albumKey);
-        const firstTrack = [...tracks.keys()][0];
-        const title = albumLabel({ album: albumKey, track: firstTrack });
-
-        let totalQuotes = 0, seenCount = 0;
-        const matchedTracks = new Map();
-
-        for (const [track, indices] of tracks) {
-            const meta = trackMeta({ album: albumKey, track });
-            const hay = (meta.title + ' ' + meta.feats.join(' ') + ' ' + meta.main).toLowerCase();
-            const albumHay = title.toLowerCase();
-            const trackMatches = !q || hay.includes(q) || albumHay.includes(q);
-            const matchedIndices = indices.filter(i => !q || trackMatches || getQuote(i).text.toLowerCase().includes(q));
-            if (matchedIndices.length === 0) continue;
-            matchedTracks.set(track, matchedIndices);
-            totalQuotes += matchedIndices.length;
-            seenCount += matchedIndices.filter(i => seenState.indices.includes(i)).length;
-        }
-        if (matchedTracks.size === 0) continue;
-        shownAlbums++;
-        const isOpen = openAlbumKey === albumKey;
-        const coverHtml = `<div class="album-cover-wrap ph" data-cover-album="${esc(albumKey)}">♪</div>`;
-
-        html += `<div class="album-card${isOpen ? ' open' : ''}" data-album="${esc(albumKey)}">
-            <button class="album-card-head" type="button" aria-expanded="${isOpen}">
-                ${coverHtml}
-                <div class="album-info">
-                    <p class="album-title">${esc(title)}</p>
-                    <p class="album-stats">${matchedTracks.size} ${plural(matchedTracks.size,'трек','трека','треков')} · <b>${seenCount}</b>/${totalQuotes} ${plural(totalQuotes,'цитата','цитаты','цитат')} открыто</p>
-                </div>
-                <svg class="album-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
-                </svg>
-            </button>
-            <div class="album-tracks">
-                ${[...matchedTracks].map(([track, indices]) => renderTrackGroup(albumKey, track, indices)).join('')}
-            </div>
-        </div>`;
-    }
-    if (shownAlbums === 0) {
-        catalogBody.innerHTML = '<p style="color:#858585;padding:24px 0;text-align:center">Ничего не найдено.</p>';
-        return;
-    }
-    catalogBody.innerHTML = html;
-
-    catalogBody.querySelectorAll('.album-card-head').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const cardEl = btn.closest('.album-card');
-            const key = cardEl.dataset.album;
-            const willOpen = !cardEl.classList.contains('open');
-            catalogBody.querySelectorAll('.album-card').forEach(c => {
-                c.classList.remove('open');
-                c.querySelector('.album-card-head').setAttribute('aria-expanded', 'false');
-            });
-            if (willOpen) {
-                cardEl.classList.add('open');
-                btn.setAttribute('aria-expanded', 'true');
-                openAlbumKey = key;
-            } else {
-                openAlbumKey = null;
-            }
-        });
-    });
-    hydrateCatalogCovers();
-}
-
-function renderTrackGroup(albumKey, track, indices) {
-    const meta = trackMeta({ album: albumKey, track });
-    const fh = featsHtml({ album: albumKey, track });
-    const albumText = albumLabel({ album: albumKey, track });
-    const sameName = meta.title === albumText && meta.title !== 'Космоцветок';
-    const shownName = sameName ? albumText : meta.title;
-    const coverHtml = `<div class="track-cover ph" data-cover-album="${esc(albumKey)}" data-cover-track="${esc(track)}">♪</div>`;
-
-    const rows = indices.map(i => {
-        const quote = getQuote(i);
-        const seen = seenState.indices.includes(i);
-        const isSecret = i >= quotes.length;
-        const secretClass = isSecret ? ' secret' : '';
-        const noteHtml = isSecret && quote.note
-            ? `<span class="cat-note">${esc(quote.note)}</span>`
-            : '';
-
-        if (seen) {
-            return `<div class="cat-item seen${secretClass}">
-                <span class="dot"></span>
-                <span class="cat-text-wrap">
-                    <span>«${esc(quote.text)}»</span>
-                    ${noteHtml}
-                </span>
-            </div>`;
-        }
-        return `<div class="cat-item locked${secretClass}">
-            <span class="dot"></span>
-            <span class="cat-body">
-                <span class="cat-text">«${esc(quote.text)}»</span>
-                <span class="cat-mask">
-                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                        <path d="M4 7V5a4 4 0 118 0v2M3 7h10v7H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                    </svg>
-                    Закрыто
-                </span>
-                ${noteHtml}
-            </span>
-        </div>`;
-    }).join('');
-
-    return `<div class="track-group">
-        <div class="track-head">
-            ${coverHtml}
-            <div class="track-head-info">
-                <p class="track-title">${esc(shownName)}</p>
-                ${fh ? `<p class="track-feats">${fh}</p>` : ''}
-            </div>
-        </div>
-        ${rows}
-    </div>`;
-}
-
-let coverObserver = null;
-function hydrateCatalogCovers() {
-    if (coverObserver) coverObserver.disconnect();
-    coverObserver = new IntersectionObserver(entries => {
-        for (const en of entries) {
-            if (!en.isIntersecting) continue;
-            const el = en.target;
-            coverObserver.unobserve(el);
-
-            if (el.hasAttribute('data-cover-track')) {
-                const albumKey = el.dataset.coverAlbum;
-                const track    = el.dataset.coverTrack;
-                resolveCover({ album: albumKey, track }).then(url => {
-                    if (!url) return;
-                    const img = document.createElement('img');
-                    img.className = 'track-cover';
-                    img.alt = ''; img.referrerPolicy = 'no-referrer';
-                    img.onload = () => el.replaceWith(img);
-                    img.src = url;
-                });
-                continue;
-            }
-
-            if (el.classList.contains('album-cover-wrap')) {
-                const albumKey = el.dataset.coverAlbum;
-                if (!albumKey) continue;
-                const first = quotes.find(q => q.album === albumKey)
-                    || secretQuotes.find(q => q.album === albumKey);
-                if (!first) continue;
-                resolveCover(first).then(url => {
-                    if (!url) return;
-                    const img = document.createElement('img');
-                    img.alt = ''; img.referrerPolicy = 'no-referrer';
-                    img.onload = () => {
-                        el.innerHTML = '';
-                        el.classList.remove('ph');
-                        el.appendChild(img);
-                    };
-                    img.src = url;
-                });
-            }
-        }
-    }, { root: catalogBody, rootMargin: '200px' });
-
-    catalogBody.querySelectorAll('.album-card').forEach(el => coverObserver.observe(el));
-    catalogBody.querySelectorAll('[data-cover-track]').forEach(el => coverObserver.observe(el));
-    catalogBody.querySelectorAll('.album-cover-wrap[data-cover-album]').forEach(el => coverObserver.observe(el));
-}
-
-function openCatalog() {
-    openAlbumKey = null;
-    renderCatalog('');
-    renderAchievementsBar();
-    catalogSearch.value = '';
-    catalogModal.hidden = false;
-    document.body.style.overflow = 'hidden';
-    checkAchievements();
-}
-function closeCatalog() {
-    catalogModal.hidden = true;
-    document.body.style.overflow = '';
-    openAlbumKey = null;
-}
-
-catalogBtn.addEventListener('click', openCatalog);
-catalogClose.addEventListener('click', closeCatalog);
-catalogModal.addEventListener('click', (e) => { if (e.target === catalogModal) closeCatalog(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !catalogModal.hidden) closeCatalog(); });
-catalogSearch.addEventListener('input', (e) => { openAlbumKey = null; renderCatalog(e.target.value); });
-
-// ==========================================
-// СМЕНА ДНЯ
-// ==========================================
-function checkDayChange() {
-    const today = todayKey();
-    if (limitState.date !== today) {
-        limitState = { date: today, count: 0 };
-        saveLimitState(limitState);
-    }
-    updateCounter();
-}
-setInterval(checkDayChange, 60 * 1000);
-
-checkDayChange();
-updateCounter();
-updateResetTimer();
-</script>
+  </script>
 </body>
 </html>
