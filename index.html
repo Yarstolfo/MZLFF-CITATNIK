@@ -595,24 +595,79 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
 }
 .qotd-meta span { color: var(--muted); }
 
-.vote-btn {
-    min-height: 42px;
-    margin: 24px 0 0 8px;
-    padding: 0 16px;
-    gap: 10px;
+.qotd .catalog-btn { margin-top: 18px; }
+.qotd-text[hidden], .qotd-meta[hidden] { display: none; }
+
+.vote-hint {
+    margin: 0 0 10px;
+    padding: 0 2px;
+    color: #adb2ae;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+.vote-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #ffffff14;
+    background: #111412c0;
+    text-align: left;
+    transition: border-color .2s ease, background .2s ease;
+}
+.vote-item.mine { border-color: #ffffff70; background: #1a1d1b; }
+.vote-item-text { min-width: 0; flex: 1; }
+.vote-item-quote {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.35;
+}
+.vote-item-meta {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.vote-item-side {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+.vote-item-count {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.vote-item-count b { color: var(--paper); font-size: 14px; }
+.vote-pick {
+    min-height: 34px;
+    margin: 0;
+    padding: 0 12px;
     border: 1px solid #ffffff70;
     background: transparent;
     color: var(--paper);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .13em;
-    vertical-align: top;
 }
-.vote-btn:hover { background: var(--paper); color: var(--ink); transform: none; }
-.vote-btn[hidden] { display: none; }
-.vote-btn:disabled { opacity: .55; cursor: default; }
-.vote-btn:disabled:hover { background: transparent; color: var(--paper); }
-.quote-card.dropping .vote-btn { animation: reveal .55s 1s cubic-bezier(.2,.7,.2,1) both; }
+.vote-pick:hover { background: var(--paper); color: var(--ink); transform: none; }
+.vote-pick:disabled { opacity: .4; cursor: default; }
+.vote-pick:disabled:hover { background: transparent; color: var(--paper); }
+.vote-item.mine .vote-pick:disabled { opacity: 1; background: var(--paper); color: var(--ink); }
+@media (max-width: 560px) {
+    .vote-item { flex-direction: column; align-items: stretch; }
+    .vote-item-side { flex-direction: row; align-items: center; justify-content: space-between; }
+}
 
 #quote-button:disabled {
     opacity: .4;
@@ -926,6 +981,7 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
             <p class="qotd-label" id="qotd-label"></p>
             <p class="qotd-text" id="qotd-text"></p>
             <p class="qotd-meta" id="qotd-meta"></p>
+            <button class="catalog-btn" id="vote-open" type="button">Голосование дня</button>
         </section>
         <button class="catalog-btn" id="quote-button" type="button" aria-controls="quote-card">
             <span>Моя цитата</span>
@@ -950,7 +1006,6 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
                     <path d="M4 12 12 4M5 4h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
                 </svg>
             </a>
-            <button class="vote-btn" id="vote-button" type="button" hidden>Голосовать за цитату дня</button>
         </section>
     </main>
 </div>
@@ -972,6 +1027,16 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
             <button class="modal-close" id="achievements-close" type="button" aria-label="Закрыть">✕</button>
         </div>
         <div class="modal-body" id="achievements-body"></div>
+    </div>
+</div>
+
+<div class="modal" id="vote-modal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="Голосование дня">
+        <div class="modal-search">
+            <span class="ach-modal-title">Голосование дня</span>
+            <button class="modal-close" id="vote-close" type="button" aria-label="Закрыть">✕</button>
+        </div>
+        <div class="modal-body" id="vote-body"></div>
     </div>
 </div>
 
@@ -2225,7 +2290,6 @@ button.addEventListener('click', () => {
         coverImg.hidden = true;
         listenLink.href = '#';
         listenLink.style.display = 'none';
-        onCardQuote(null);
         card.hidden = false;
         card.classList.remove('dropping');
         void card.offsetWidth;
@@ -2245,7 +2309,6 @@ button.addEventListener('click', () => {
         coverImg.hidden = true;
         listenLink.href = '#';
         listenLink.style.display = 'none';
-        onCardQuote(null);
         card.hidden = false;
         card.classList.remove('dropping');
         void card.offsetWidth;
@@ -2264,7 +2327,6 @@ button.addEventListener('click', () => {
 
     const quote = getQuote(index);
     const isSecret = index >= quotes.length;
-    onCardQuote(isSecret ? null : quote);
     quoteText.textContent = '«' + quote.text + '»';
 
     const meta = trackMeta(quote);
@@ -2616,14 +2678,18 @@ updateCounter();
 updateResetTimer();
 
 // ==========================================
-// ГОЛОСОВАНИЕ ЗА ЦИТАТУ ДНЯ (Netlify Function /api/vote)
+// ГОЛОСОВАНИЕ: 8 ЦИТАТ ДНЯ (Netlify Function /api/vote)
 // ==========================================
-const VOTE_API = '/api/vote';
+const VOTE_API   = '/api/vote';
+const VOTE_COUNT = 8;
 const qotdEl    = document.querySelector('#qotd');
 const qotdLabel = document.querySelector('#qotd-label');
 const qotdText  = document.querySelector('#qotd-text');
 const qotdMeta  = document.querySelector('#qotd-meta');
-const voteBtn   = document.querySelector('#vote-button');
+const voteOpen  = document.querySelector('#vote-open');
+const voteModal = document.querySelector('#vote-modal');
+const voteClose = document.querySelector('#vote-close');
+const voteBody  = document.querySelector('#vote-body');
 
 function quoteId(q) {
     let h = 5381;
@@ -2631,7 +2697,36 @@ function quoteId(q) {
     return h.toString(36);
 }
 const idToQuote = {};
-quotes.forEach(q => { idToQuote[quoteId(q)] = q; });
+const candidatePool = [];
+quotes.forEach(q => {
+    const id = quoteId(q);
+    if (!idToQuote[id]) { idToQuote[id] = q; candidatePool.push({ id, q }); }
+});
+candidatePool.sort((a, b) => a.id < b.id ? -1 : 1);
+
+// одинаковый набор из 8 цитат у всех посетителей: выбор зависит только от даты
+function xmur3(str) {
+    let h = 1779033703 ^ str.length;
+    for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    return () => { h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return (h ^= h >>> 16) >>> 0; };
+}
+function mulberry32(a) {
+    return () => {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+function candidatesFor(day) {
+    const rnd = mulberry32(xmur3('mzlff:' + day)());
+    const arr = candidatePool.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, VOTE_COUNT);
+}
 
 function getClientId() {
     try {
@@ -2645,81 +2740,111 @@ function getClientId() {
 }
 const CLIENT_ID = getClientId();
 
-let voteState = { available: false, voted: null };
-let currentVoteQuote = null;
+let voteData = null;   // ответ сервера
+let voteBusy = false;
 
-function renderQotd(data) {
-    const firstKnown = list => (list || []).find(r => idToQuote[r.id]);
-    let row = firstKnown(data.yesterday && data.yesterday.top);
+function placeOf(q) {
+    const t = trackMeta(q).title, a = albumLabel(q);
+    return t === a ? a : t + ' · ' + a;
+}
+
+function renderQotd() {
+    const d = voteData;
+    // цитата дня = победитель вчерашнего голосования среди вчерашних 8 кандидатов
+    const yIds = new Set(candidatesFor(d.yesterday.day).map(c => c.id));
+    let row = (d.yesterday.top || []).find(r => yIds.has(r.id));
     let label = 'Цитата дня';
-    if (!row) { row = firstKnown(data.today); label = 'Сейчас лидирует'; }
-    if (!row) { qotdEl.hidden = true; return; }
-
-    const q = idToQuote[row.id];
-    const meta = trackMeta(q);
-    const albumText = albumLabel(q);
-    qotdLabel.textContent = label;
-    qotdText.textContent = '«' + q.text + '»';
-    const place = (meta.title === albumText) ? albumText : meta.title + ' · ' + albumText;
-    qotdMeta.innerHTML = esc(place) + ' <span>— ' + row.votes + ' ' + plural(row.votes, 'голос', 'голоса', 'голосов') + '</span>';
+    if (!row) {
+        const tIds = new Set(candidatesFor(d.day).map(c => c.id));
+        row = (d.today || []).find(r => tIds.has(r.id));
+        label = 'Сейчас лидирует';
+    }
+    if (row) {
+        const q = idToQuote[row.id];
+        qotdLabel.textContent = label;
+        qotdText.textContent = '«' + q.text + '»';
+        qotdText.hidden = false;
+        qotdMeta.innerHTML = esc(placeOf(q)) + ' <span>— ' + row.votes + ' ' + plural(row.votes, 'голос', 'голоса', 'голосов') + '</span>';
+        qotdMeta.hidden = false;
+    } else {
+        qotdLabel.textContent = 'Цитата дня';
+        qotdText.textContent = 'Пока не выбрана — проголосуй за любую из сегодняшних 8 цитат.';
+        qotdText.hidden = false;
+        qotdMeta.hidden = true;
+    }
     qotdEl.hidden = false;
 }
 
-function updateVoteBtn() {
-    if (!voteState.available || !currentVoteQuote) { voteBtn.hidden = true; return; }
-    voteBtn.hidden = false;
-    if (voteState.voted) {
-        voteBtn.disabled = true;
-        voteBtn.textContent = 'Голос на сегодня отдан';
-    } else {
-        voteBtn.disabled = false;
-        voteBtn.textContent = 'Голосовать за цитату дня';
-    }
-}
+function renderVoteList() {
+    const d = voteData;
+    if (!d) return;
+    const counts = {};
+    (d.today || []).forEach(r => { counts[r.id] = r.votes; });
+    const cands = candidatesFor(d.day);
+    const voted = d.voted;
 
-function onCardQuote(q) {
-    currentVoteQuote = q;
-    updateVoteBtn();
+    const hint = voted
+        ? 'Твой голос на сегодня учтён. Итоги подведём в полночь по Москве — победитель станет цитатой дня.'
+        : 'Каждый день — новые 8 цитат. Один голос в день. В полночь по Москве победитель становится цитатой дня.';
+
+    voteBody.innerHTML = '<p class="vote-hint">' + hint + '</p><div class="ach-list">' +
+        cands.map(c => {
+            const n = counts[c.id] || 0;
+            const mine = voted === c.id;
+            return '<div class="vote-item' + (mine ? ' mine' : '') + '">' +
+                '<div class="vote-item-text">' +
+                    '<span class="vote-item-quote">«' + esc(c.q.text) + '»</span>' +
+                    '<span class="vote-item-meta">' + esc(placeOf(c.q)) + '</span>' +
+                '</div>' +
+                '<div class="vote-item-side">' +
+                    '<span class="vote-item-count"><b>' + n + '</b> ' + plural(n, 'голос', 'голоса', 'голосов') + '</span>' +
+                    '<button class="vote-pick" type="button" data-id="' + c.id + '"' + ((voted || voteBusy) ? ' disabled' : '') + '>' +
+                        (mine ? '✓ Твой голос' : 'Голосовать') + '</button>' +
+                '</div></div>';
+        }).join('') + '</div>';
 }
 
 async function loadVotes() {
     try {
         const r = await fetch(VOTE_API + '?cid=' + encodeURIComponent(CLIENT_ID), { cache: 'no-store' });
         if (!r.ok) throw new Error(r.status);
-        const data = await r.json();
-        voteState.available = true;
-        voteState.voted = data.voted || null;
-        renderQotd(data);
+        voteData = await r.json();
+        renderQotd();
+        if (!voteModal.hidden) renderVoteList();
     } catch (e) {
-        // нет бэкенда (GitHub Pages, file://) — голосование просто скрыто
-        voteState.available = false;
+        // нет бэкенда (GitHub Pages, file://) — голосование скрыто
+        voteData = null;
         qotdEl.hidden = true;
     }
-    updateVoteBtn();
 }
 
-voteBtn.addEventListener('click', async () => {
-    if (!currentVoteQuote || voteState.voted) return;
-    voteBtn.disabled = true;
+voteBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.vote-pick');
+    if (!btn || !voteData || voteData.voted || voteBusy) return;
+    voteBusy = true;
+    renderVoteList();
     try {
         const r = await fetch(VOTE_API, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: quoteId(currentVoteQuote), cid: CLIENT_ID }),
+            body: JSON.stringify({ id: btn.dataset.id, cid: CLIENT_ID }),
         });
-        if (r.ok || r.status === 409) {
-            voteState.voted = quoteId(currentVoteQuote);
-            updateVoteBtn();
-            loadVotes();
-        } else {
-            voteBtn.textContent = r.status === 429 ? 'Слишком много голосов с этой сети' : 'Не удалось, попробуй позже';
-            setTimeout(updateVoteBtn, 2500);
-        }
-    } catch (e) {
-        voteBtn.textContent = 'Не удалось, попробуй позже';
-        setTimeout(updateVoteBtn, 2500);
+        if (r.status === 429) alert('С этой сети уже проголосовало слишком много людей. Попробуй позже.');
+        else if (!r.ok && r.status !== 409) alert('Не удалось отправить голос, попробуй позже.');
+    } catch (err) {
+        alert('Не удалось отправить голос, попробуй позже.');
     }
+    voteBusy = false;
+    await loadVotes();
+    renderVoteList();
 });
+
+function openVote()  { renderVoteList(); voteModal.hidden = false; document.body.style.overflow = 'hidden'; loadVotes(); }
+function closeVote() { voteModal.hidden = true; document.body.style.overflow = ''; }
+voteOpen.addEventListener('click', openVote);
+voteClose.addEventListener('click', closeVote);
+voteModal.addEventListener('click', (e) => { if (e.target === voteModal) closeVote(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !voteModal.hidden) closeVote(); });
 
 loadVotes();
 setInterval(loadVotes, 5 * 60 * 1000);
