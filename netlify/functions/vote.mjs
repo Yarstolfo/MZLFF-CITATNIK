@@ -45,8 +45,7 @@ async function tally(store, day) {
   }
   return Object.entries(counts)
     .map(([id, votes]) => ({ id, votes }))
-    .sort((a, b) => b.votes - a.votes || a.id.localeCompare(b.id))
-    .slice(0, 5);
+    .sort((a, b) => b.votes - a.votes || a.id.localeCompare(b.id));
 }
 
 // итоги прошедшего дня считаем один раз и запоминаем
