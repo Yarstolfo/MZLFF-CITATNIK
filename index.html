@@ -1091,6 +1091,15 @@ const achievements = {
 
     // ── За редкие открытия ──
     lucky_secret:    { name: 'Счастливчик',                      desc: 'Первая открытая цитата оказалась тайной' },
+
+    // ── За голосование ──
+    vote_first:      { name: 'Голос услышан',                    desc: 'Проголосовал в первый раз' },
+    vote_pioneer:    { name: 'Первый на районе',                 desc: 'Проголосовал первым за день' },
+    vote_streak_3:   { name: 'Не пропускаешь выборы',            desc: 'Голосовал 3 дня подряд' },
+    vote_10:         { name: 'Голос народа',                     desc: 'Проголосовал 10 раз' },
+    vote_winner:     { name: 'Твоя взяла',                       desc: 'Цитата, за которую ты голосовал, стала цитатой дня' },
+    vote_winner_3:   { name: 'Чуйка на хиты',                    desc: 'Три раза угадал цитату дня' },
+    vote_lonely:     { name: 'Голос в пустоту',                  desc: 'Твоя цитата получила только один голос — твой' },
 };
 
 const LS_ACH = 'mzlff:achievements';
@@ -2740,6 +2749,74 @@ function getClientId() {
 }
 const CLIENT_ID = getClientId();
 
+// ── журнал моих голосов и достижения за голосование ──
+const LS_VOTELOG = 'mzlff:votelog';   // { 'YYYY-MM-DD': { id, first?, result? } }
+function loadVoteLog() {
+    try {
+        const raw = JSON.parse(localStorage.getItem(LS_VOTELOG) || 'null');
+        if (raw && typeof raw === 'object') return raw;
+    } catch (e) {}
+    return {};
+}
+function saveVoteLog() { try { localStorage.setItem(LS_VOTELOG, JSON.stringify(voteLog)); } catch (e) {} }
+let voteLog = loadVoteLog();
+
+function voteUnlock(key) {
+    if (unlock(key)) saveAchievements(unlockedAchievements);
+}
+function dayDiff(a, b) {
+    const t = d => { const [y, m, dd] = d.split('-').map(Number); return Date.UTC(y, m - 1, dd); };
+    return Math.round((t(b) - t(a)) / 86400000);
+}
+function evaluateVoteAchievements() {
+    const days = Object.keys(voteLog).sort();
+    if (days.length >= 1)  voteUnlock('vote_first');
+    if (days.length >= 10) voteUnlock('vote_10');
+    if (days.some(d => voteLog[d].first)) voteUnlock('vote_pioneer');
+
+    let run = days.length ? 1 : 0, best = run;
+    for (let i = 1; i < days.length; i++) {
+        run = dayDiff(days[i - 1], days[i]) === 1 ? run + 1 : 1;
+        if (run > best) best = run;
+    }
+    if (best >= 3) voteUnlock('vote_streak_3');
+
+    const wins = days.filter(d => voteLog[d].result === 'win').length;
+    if (wins >= 1) voteUnlock('vote_winner');
+    if (wins >= 3) voteUnlock('vote_winner_3');
+    if (days.some(d => voteLog[d].result === 'lonely')) voteUnlock('vote_lonely');
+}
+function recordVote(day, id, first) {
+    if (!voteLog[day]) voteLog[day] = { id };
+    if (first) voteLog[day].first = true;
+    saveVoteLog();
+    evaluateVoteAchievements();
+}
+// узнаём итоги прошедших дней, в которых я голосовал
+async function resolveVoteResults() {
+    if (!voteData) return;
+    const today = voteData.day;
+    let changed = false;
+    for (const day of Object.keys(voteLog)) {
+        const entry = voteLog[day];
+        if (entry.result || day >= today || dayDiff(day, today) > 30) continue;
+        try {
+            const r = await fetch(VOTE_API + '?result=' + day, { cache: 'no-store' });
+            if (!r.ok) continue;
+            const { top } = await r.json();
+            const ids = new Set(candidatesFor(day).map(c => c.id));
+            const winner = (top || []).find(x => ids.has(x.id));
+            if (winner && winner.id === entry.id) entry.result = 'win';
+            else {
+                const mine = (top || []).find(x => x.id === entry.id);
+                entry.result = (mine && mine.votes === 1) ? 'lonely' : 'lose';
+            }
+            changed = true;
+        } catch (e) {}
+    }
+    if (changed) { saveVoteLog(); evaluateVoteAchievements(); }
+}
+
 let voteData = null;   // ответ сервера
 let voteBusy = false;
 
@@ -2809,8 +2886,10 @@ async function loadVotes() {
         const r = await fetch(VOTE_API + '?cid=' + encodeURIComponent(CLIENT_ID), { cache: 'no-store' });
         if (!r.ok) throw new Error(r.status);
         voteData = await r.json();
+        if (voteData.voted && !voteLog[voteData.day]) recordVote(voteData.day, voteData.voted, false);
         renderQotd();
         if (!voteModal.hidden) renderVoteList();
+        resolveVoteResults();
     } catch (e) {
         // нет бэкенда (GitHub Pages, file://) — голосование скрыто
         voteData = null;
@@ -2822,6 +2901,7 @@ voteBody.addEventListener('click', async (e) => {
     const btn = e.target.closest('.vote-pick');
     if (!btn || !voteData || voteData.voted || voteBusy) return;
     voteBusy = true;
+    const wasFirst = (voteData.today || []).every(x => !x.votes);
     renderVoteList();
     try {
         const r = await fetch(VOTE_API, {
@@ -2829,6 +2909,7 @@ voteBody.addEventListener('click', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: btn.dataset.id, cid: CLIENT_ID }),
         });
+        if (r.ok) recordVote(voteData.day, btn.dataset.id, wasFirst);
         if (r.status === 429) alert('С этой сети уже проголосовало слишком много людей. Попробуй позже.');
         else if (!r.ok && r.status !== 409) alert('Не удалось отправить голос, попробуй позже.');
     } catch (err) {
