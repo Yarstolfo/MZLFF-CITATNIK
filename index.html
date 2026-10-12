@@ -977,9 +977,261 @@
     // Любую обложку можно задать и вручную: albums.ADHD.cover = 'https://...'
     // ==========================================
     /*DATA:START*/
-    const COVERS = {};
-    const TRACK_INFO = {};
-    /*DATA:END*/
+const COVERS = {
+    "svetlayastorona": "covers/svetlayastorona.png",
+    "ADHD": "covers/ADHD.png",
+    "PHANTASMAGORIA": "covers/PHANTASMAGORIA.png",
+    "HOLOD": "covers/HOLOD.png",
+    "POTERYAN": "covers/POTERYAN.png",
+    "MAYAK": "covers/MAYAK.png",
+    "anemone": "covers/anemone.png",
+    "COSMOC": "covers/COSMOC.png",
+    "AKUST": "covers/AKUST.jpg",
+    "nichego": "covers/nichego.png",
+    "singl_140bpm": "covers/singl_140bpm.jpg",
+    "singl_atm3": "covers/singl_atm3.png",
+    "singl_atm4": "covers/singl_atm4.png",
+    "singl_autoban": "covers/singl_autoban.png",
+    "singl_fluv": "covers/singl_fluv.png",
+    "singl_rolls": "covers/singl_rolls.png",
+    "singl_tru3": "covers/singl_tru3.png",
+    "singl_catharsis": "covers/singl_catharsis.jpg",
+    "singl_bumazhny": "covers/singl_bumazhny.png",
+    "singl_burya": "covers/singl_burya.png",
+    "singl_abrikos": "covers/singl_abrikos.png",
+    "singl_grafik": "covers/singl_grafik.png",
+    "singl_tiktok": "covers/singl_tiktok.png",
+    "singl_kapel": "covers/singl_kapel.png",
+    "singl_lirikal": "covers/singl_lirikal.png",
+    "singl_neudach": "covers/singl_neudach.png",
+    "singl_ottepel": "covers/singl_ottepel.png",
+    "singl_poidem": "covers/singl_poidem.png",
+    "singl_privet": "covers/singl_privet.png",
+    "singl_pank": "covers/singl_pank.png",
+    "singl_letom": "covers/singl_letom.png",
+    "singl_vesna": "covers/singl_vesna.png",
+    "singl_ajzek": "covers/singl_ajzek.png",
+    "singl_beskont": "covers/singl_beskont.png",
+    "singl_bejs": "covers/singl_bejs.png",
+    "singl_tajna": "covers/singl_tajna.png",
+    "singl_diss": "covers/singl_diss.png",
+    "singl_igrushki": "covers/singl_igrushki.png",
+    "singl_lofi": "covers/singl_lofi.png",
+    "singl_luchshee": "covers/singl_luchshee.png",
+    "singl_nevynos": "covers/singl_nevynos.png",
+    "singl_pervy": "covers/singl_pervy.png",
+    "singl_plastyr": "covers/singl_plastyr.png",
+    "singl_rakushki": "covers/singl_rakushki.png",
+    "singl_nepoim": "covers/singl_nepoim.png",
+    "singl_koleso": "covers/singl_koleso.png",
+    "singl_oshib": "covers/singl_oshib.png",
+    "singl_ustal": "covers/singl_ustal.png",
+    "fit_gdepapa": "covers/fit_gdepapa.png",
+    "fit_begat": "covers/fit_begat.png",
+    "fit_karting": "covers/fit_karting.png",
+    "fit_uhodi": "covers/fit_uhodi.png",
+    "fit_chernym": "covers/fit_chernym.png",
+    "fit_zabyl": "covers/fit_zabyl.png"
+};
+const TRACK_INFO = {
+    "svetlayastorona|Почемучка (feat. Екатерина Яшникова)": {
+        "main": "",
+        "feats": [
+            "Екатерина Яшникова (Ekaterina Yashnikova)"
+        ]
+    },
+    "svetlayastorona|Ящики (feat. BOOKER)": {
+        "main": "",
+        "feats": [
+            "BOOKER"
+        ]
+    },
+    "svetlayastorona|hate core": {
+        "main": "",
+        "feats": [
+            "Слава КПСС (Slava KPSS)",
+            "CMH"
+        ]
+    },
+    "svetlayastorona|Не создать цветы (feat. playingtheangel)": {
+        "main": "",
+        "feats": [
+            "playingtheangel"
+        ]
+    },
+    "svetlayastorona|Другая сторона (feat. STED.D)": {
+        "main": "",
+        "feats": [
+            "STED.D"
+        ]
+    },
+    "ADHD|мы не станем другими": {
+        "main": "",
+        "feats": [
+            "GSPD"
+        ]
+    },
+    "ADHD|TRINITY CYPHER": {
+        "main": "",
+        "feats": [
+            "ИзТолпы (IzTolpy)",
+            "ксх (kskh)"
+        ]
+    },
+    "HOLOD|анабиоз": {
+        "main": "",
+        "feats": [
+            "STED.D"
+        ]
+    },
+    "POTERYAN|оставь себе": {
+        "main": "",
+        "feats": [
+            "pyrokinesis"
+        ]
+    },
+    "MAYAK|ты рядом": {
+        "main": "",
+        "feats": [
+            "qwiza"
+        ]
+    },
+    "anemone|однополярности": {
+        "main": "",
+        "feats": [
+            "STED.D"
+        ]
+    },
+    "COSMOC|Противоречие выборов": {
+        "main": "",
+        "feats": [
+            "ксх (kskh)"
+        ]
+    },
+    "singl_140bpm|140 BPM CYPHER (2024)": {
+        "main": "",
+        "feats": [
+            "OttO (RUS)",
+            "Никита Мастяк (Nikita Mastyak)",
+            "ИзТолпы (IzTolpy)",
+            "edik_kingsta"
+        ]
+    },
+    "singl_atm3|ATM 3": {
+        "main": "",
+        "feats": [
+            "BEATCASTER",
+            "MONRAU",
+            "Золотое Перо (Zolotoe Pero)",
+            "Skurt",
+            "ФРИК ПАТИ (FREAK PARTY)",
+            "BOOKER",
+            "DELORENZY",
+            "ЮГ 404 (UG 404)",
+            "N.MASTEROFF"
+        ]
+    },
+    "singl_atm4|ATM 4": {
+        "main": "",
+        "feats": [
+            "Слава КПСС (Slava KPSS)",
+            "BOOKER",
+            "CMH"
+        ]
+    },
+    "singl_rolls|Rolls Royce Phantom": {
+        "main": "",
+        "feats": [
+            "Skurt"
+        ]
+    },
+    "singl_catharsis|catharsis": {
+        "main": "",
+        "feats": [
+            "CMH"
+        ]
+    },
+    "singl_burya|Буря, метель и мгла": {
+        "main": "",
+        "feats": [
+            "STED.D"
+        ]
+    },
+    "singl_tiktok|Девочка с тиктока": {
+        "main": "",
+        "feats": [
+            "ШАРЫ (SHARY)"
+        ]
+    },
+    "singl_lirikal|Лирикал Лонг": {
+        "main": "",
+        "feats": [
+            "Rauf Hattab",
+            "Кукиш с Хаслом (Kukish s Khaslom)",
+            "solovey (RUS)"
+        ]
+    },
+    "singl_poidem|Пойдём со мной": {
+        "main": "",
+        "feats": [
+            "ИзТолпы (IzTolpy)"
+        ]
+    },
+    "singl_pank|СТАРАЯ ПАНК ВОЛНА": {
+        "main": "",
+        "feats": [
+            "Слава КПСС (Slava KPSS)"
+        ]
+    },
+    "singl_bejs|бэйслайн бизнес": {
+        "main": "",
+        "feats": [
+            "CMH"
+        ]
+    },
+    "singl_nevynos|невыносимо": {
+        "main": "",
+        "feats": [
+            "Слава КПСС (Slava KPSS)"
+        ]
+    },
+    "singl_oshib|я не боюсь ошибаться": {
+        "main": "",
+        "feats": [
+            "СЕРЕГА ПИРАТ (SEREGA PIRAT)"
+        ]
+    },
+    "fit_gdepapa|GDE PAPA LONGMIX": {
+        "main": "BOOKER",
+        "feats": [
+            "CMH",
+            "Слава КПСС (Slava KPSS)"
+        ]
+    },
+    "fit_begat|БЕГАТЬ И ПАДАТЬ": {
+        "main": "КУОК (KYOK)",
+        "feats": []
+    },
+    "fit_karting|Мы зовем ее картинг": {
+        "main": "Где Ноар (Gde Noar)",
+        "feats": [
+            "Лекс 1707 (Lex 1707)"
+        ]
+    },
+    "fit_uhodi|Уходи": {
+        "main": "ФРИК ПАТИ (FREAK PARTY)",
+        "feats": []
+    },
+    "fit_chernym|Черным по белому": {
+        "main": "СТИНТ (THE STINT)",
+        "feats": []
+    },
+    "fit_zabyl|забыл умереть": {
+        "main": "playingtheangel",
+        "feats": []
+    }
+};
+/*DATA:END*/
 
     // ==========================================
     // ОБЛОЖКИ И ФИТЫ
@@ -1002,12 +1254,18 @@
         return { title: raw.slice(0, m.index).trim(), feats };
     }
 
+    // "Имя (Latin name)" / "Имя (RUS)" -> "Имя" (оставляем только основное имя)
+    function shortName(n) {
+        const s = String(n || '').trim();
+        return s.replace(/\s*[\(\[][^)\]]*[\)\]]\s*$/, '').trim() || s;
+    }
+
     function trackMeta(quote) {
         const parsed = parseTrack(quote.track);
         const info = TRACK_INFO[quote.album + '|' + quote.track] || {};
         const isFit = quote.album.startsWith('fit_');
-        const feats = (info.feats && info.feats.length ? info.feats : parsed.feats).filter(n => !ARTIST_RE.test(n));
-        return { title: parsed.title, feats, main: info.main || '', isFit };
+        const feats = [...new Set((info.feats && info.feats.length ? info.feats : parsed.feats).map(shortName))].filter(n => n && !ARTIST_RE.test(n));
+        return { title: parsed.title, feats, main: shortName(info.main || ''), isFit };
     }
 
     // HTML-строка с информацией о фитах ('' если фитов нет)
