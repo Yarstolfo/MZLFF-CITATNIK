@@ -62,6 +62,106 @@ header {
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand-mark { width: 10px; height: 10px; background: var(--acid); }
 
+/* ── Достижения ── */
+.achievements-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #ffffff14;
+    background: #0b0d0c;
+}
+.achievements-bar .ach-title {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-right: 4px;
+}
+.ach-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid #ffffff24;
+    background: #111412;
+    color: #6d736f;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: default;
+    transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.ach-badge.unlocked {
+    border-color: #b98cff70;
+    background: #1a1428;
+    color: #d9c2ff;
+}
+.ach-badge .ach-icon {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+}
+.ach-badge.unlocked .ach-icon { color: #b98cff; }
+.ach-badge.locked .ach-icon { color: #ffffff30; }
+
+/* ── Тост достижения ── */
+.ach-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 90;
+    transform: translate(-50%, 20px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: min(92vw, 420px);
+    padding: 12px 16px;
+    border: 1px solid #b98cff70;
+    background: #14101e;
+    color: var(--paper);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s ease;
+}
+.ach-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+.ach-toast .ach-toast-icon {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    color: #b98cff;
+}
+.ach-toast .ach-toast-text { min-width: 0; }
+.ach-toast .ach-toast-label {
+    display: block;
+    color: #b98cff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
+.ach-toast .ach-toast-name {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+}
+.ach-toast .ach-toast-desc {
+    display: block;
+    margin-top: 2px;
+    color: #adb2ae;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .04em;
+}	
+
 .catalog-btn {
     display: inline-flex;
     align-items: center;
@@ -279,7 +379,8 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
     max-height: 88svh;
     border: 1px solid #ffffff30;
     background: #0e100f;
-	
+}
+
 .cat-text-wrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 
 .cat-note {
@@ -293,7 +394,15 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
     text-transform: none;
     font-style: italic;
 }
-	
+
+#quote-button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none;
+}
+#quote-button:disabled:hover {
+    background: var(--acid);
+    transform: none;
 }
 
 .modal-search {
@@ -624,6 +733,38 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
 </div>
 
 <script>
+
+// ==========================================
+// ДОСТИЖЕНИЯ
+// ==========================================
+const achievements = {
+    svetlayastorona: { name: 'Ты на светлой стороне!',       desc: 'Закрыл все цитаты альбома «Светлая сторона»' },
+    PHANTASMAGORIA:  { name: 'Добро пожаловать в парк!',     desc: 'Закрыл все цитаты альбома «PHANTASMAGORIA»' },
+    ADHD:            { name: 'СДВГшник',                     desc: 'Закрыл все цитаты альбома «ADHD»' },
+    HOLOD:           { name: 'Что-то тут какие-то холода ветра', desc: 'Закрыл все цитаты альбома «Холода ветра»' },
+    MAYAK:           { name: 'Который нашёл маяк',           desc: 'Закрыл все цитаты альбома «К маяку вселенной»' },
+    POTERYAN:        { name: 'Мир потеряли, но ты его нашёл', desc: 'Закрыл все цитаты альбома «Потерянный мир»' },
+    COSMOC:          { name: 'Нашли формулу нового',          desc: 'Закрыл все цитаты альбома «Космоцветок»' },
+    AKUST:           { name: 'Твой акустический',             desc: 'Закрыл все цитаты альбома «Мой Акустический»' },
+    anemone:         { name: 'Ветреница',                     desc: 'Закрыл все цитаты альбома «anemone»' },
+    nichego:         { name: 'Что-то новое',                  desc: 'Закрыл все цитаты альбома «Ничего плохого»' },
+    secret:          { name: 'Копатель',                      desc: 'Нашёл все цитаты вне дискографии' },
+};
+
+const LS_ACH = 'mzlff:achievements';
+
+function loadAchievements() {
+    try {
+        const raw = JSON.parse(localStorage.getItem(LS_ACH) || 'null');
+        if (raw && typeof raw === 'object') return raw;
+    } catch (e) {}
+    return {};
+}
+function saveAchievements(s) {
+    try { localStorage.setItem(LS_ACH, JSON.stringify(s)); } catch (e) {}
+}
+
+let unlockedAchievements = loadAchievements();
 // ==========================================
 // АЛЬБОМЫ
 // ==========================================
@@ -1318,7 +1459,6 @@ const quotes = [
 // ==========================================	
 const secretQuotes = [
     { track: 'Город под подошвой', album: 'secret', text: 'Дон ли, Волга ли течёт — котомку на плечо, боль в груди — там тайничок, открытый фомкой, не ключом.', note: 'был исполнен 4 октября 2026 года на питерском концерте MZLFF' },
-    { track: 'Секс', album: 'secret', text: 'Ты любишь секс, любишь виски, любишь дэнс, а ты любишь свэг, детка, тебе нужен шест. Ты любишь bass, дай мне тело, я хочу тебя раздеть. Я хочу тебя прям здесь.', note: 'был исполнен 24 ноября 2023 года на московском концерте MZLFF' },
     { track: 'КАК ДЕЛА', album: 'secret', text: 'Забываешь поменять слова — не всё потеряно. Я говорю: «T9» — ты не понимаешь, где это.', note: 'самый популярный трек MZLFF вне дискографии' },
     { track: 'Дисс на Генсуху', album: 'secret', text: 'Мне заплатили Эвелон и Рома, это так приятно, обоссал их за бабло, а Генсуху могу бесплатно.', note: 'один из самых известных диссов Ильи' },
     { track: 'крыса', album: 'secret', text: 'Они всячески ранят, но в сердце сталь, в мозгу — я всё помню.', note: 'трек «крыса» не вышел в основной дискографии mzlff, но всё равно очень известный' },
@@ -1584,6 +1724,63 @@ let limitState = loadLimitState();
 let seenState  = loadSeen();
 
 // ==========================================
+// ПРОВЕРКА ДОСТИЖЕНИЙ
+// ==========================================
+function getAlbumQuoteIndices(albumKey) {
+    const indices = [];
+    quotes.forEach((q, i) => { if (q.album === albumKey) indices.push(i); });
+    secretQuotes.forEach((q, i) => { if (q.album === albumKey) indices.push(quotes.length + i); });
+    return indices;
+}
+
+function checkAchievements() {
+    const seenSet = new Set(seenState.indices);
+    let anyNew = false;
+
+    for (const [albumKey, ach] of Object.entries(achievements)) {
+        if (unlockedAchievements[albumKey]) continue;
+
+        const indices = getAlbumQuoteIndices(albumKey);
+        if (indices.length === 0) continue;
+
+        const allSeen = indices.every(i => seenSet.has(i));
+        if (!allSeen) continue;
+
+        unlockedAchievements[albumKey] = true;
+        anyNew = true;
+        showAchievementToast(ach);
+    }
+
+    if (anyNew) saveAchievements(unlockedAchievements);
+}
+
+let toastTimer = null;
+function showAchievementToast(ach) {
+    let toast = document.querySelector('.ach-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'ach-toast';
+        toast.innerHTML = `
+            <svg class="ach-toast-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2l2.6 6.2 6.7.5-5.1 4.4 1.6 6.5L12 16.9 6.2 19.6l1.6-6.5-5.1-4.4 6.7-.5L12 2z"
+                      stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+            <span class="ach-toast-text">
+                <span class="ach-toast-label">Достижение открыто</span>
+                <span class="ach-toast-name"></span>
+                <span class="ach-toast-desc"></span>
+            </span>`;
+        document.body.appendChild(toast);
+    }
+    toast.querySelector('.ach-toast-name').textContent = ach.name;
+    toast.querySelector('.ach-toast-desc').textContent = ach.desc;
+
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
+}
+
+// ==========================================
 // DOM
 // ==========================================
 const button       = document.querySelector('#quote-button');
@@ -1606,12 +1803,17 @@ const catalogSearch= document.querySelector('#catalog-search');
 // СЧЁТЧИК
 // ==========================================
 function updateCounter() {
-    const remaining = Math.max(0, DAILY_LIMIT - limitState.count);
-    counterEl.innerHTML = `Сегодня осталось: <strong>${remaining}</strong> из ${DAILY_LIMIT}`;
-    counterEl.classList.toggle('limit', remaining === 0);
-    button.disabled = remaining === 0;
-    button.style.opacity = remaining === 0 ? .5 : 1;
-    button.style.cursor  = remaining === 0 ? 'not-allowed' : 'pointer';
+    const remainingDaily = Math.max(0, DAILY_LIMIT - limitState.count);
+    const totalQuotes    = quotes.length + secretQuotes.length;
+    const remainingAll   = Math.max(0, totalQuotes - seenState.indices.length);
+
+    counterEl.innerHTML = `Сегодня осталось: <strong>${remainingDaily}</strong> из ${DAILY_LIMIT}`;
+    counterEl.classList.toggle('limit', remainingDaily === 0 || remainingAll === 0);
+
+    const disabled = remainingDaily === 0 || remainingAll === 0;
+    button.disabled = disabled;
+    button.style.opacity = disabled ? .4 : 1;
+    button.style.cursor  = disabled ? 'not-allowed' : 'pointer';
 }
 
 // ==========================================
@@ -1627,31 +1829,36 @@ function getQuote(globalIndex) {
 function pickQuoteIndex() {
     const secretOffset = quotes.length;
 
-    if (secretQuotes.length > 0 && Math.random() < SECRET_CHANCE) {
-        const usedSecret = new Set(seenState.indices.filter(i => i >= secretOffset));
-        const availableSecret = [];
-        for (let i = 0; i < secretQuotes.length; i++) {
-            const g = secretOffset + i;
-            if (!usedSecret.has(g)) availableSecret.push(g);
-        }
-        if (availableSecret.length > 0) {
-            return availableSecret[Math.floor(Math.random() * availableSecret.length)];
-        }
-        seenState.indices = seenState.indices.filter(i => i < secretOffset);
-        saveSeen(seenState);
-        return secretOffset + Math.floor(Math.random() * secretQuotes.length);
+    // ── Собираем НЕоткрытые обычные ──
+    const usedRegular = new Set(seenState.indices.filter(i => i < secretOffset));
+    const availableRegular = [];
+    for (let i = 0; i < quotes.length; i++) {
+        if (!usedRegular.has(i)) availableRegular.push(i);
     }
 
-    const used = new Set(seenState.indices.filter(i => i < secretOffset));
-    const available = [];
-    for (let i = 0; i < quotes.length; i++) if (!used.has(i)) available.push(i);
-    if (available.length === 0) {
-        if (secretQuotes.length > 0) {
-            return secretOffset + Math.floor(Math.random() * secretQuotes.length);
-        }
-        return -1;
+    // ── Собираем НЕоткрытые тайные ──
+    const usedSecret = new Set(seenState.indices.filter(i => i >= secretOffset));
+    const availableSecret = [];
+    for (let i = 0; i < secretQuotes.length; i++) {
+        const g = secretOffset + i;
+        if (!usedSecret.has(g)) availableSecret.push(g);
     }
-    return available[Math.floor(Math.random() * available.length)];
+
+    // ── Если ВСЁ кончилось — возвращаем -1 ──
+    if (availableRegular.length === 0 && availableSecret.length === 0) return -1;
+
+    // ── Тайные: если ещё есть И повезло ──
+    if (availableSecret.length > 0 && Math.random() < SECRET_CHANCE) {
+        return availableSecret[Math.floor(Math.random() * availableSecret.length)];
+    }
+
+    // ── Обычные: если ещё есть ──
+    if (availableRegular.length > 0) {
+        return availableRegular[Math.floor(Math.random() * availableRegular.length)];
+    }
+
+    // ── Обычных нет — отдаём тайную ──
+    return availableSecret[Math.floor(Math.random() * availableSecret.length)];
 }
 
 // ==========================================
@@ -1660,13 +1867,33 @@ function pickQuoteIndex() {
 button.addEventListener('click', () => {
     if (limitState.count >= DAILY_LIMIT) return;
     const index = pickQuoteIndex();
-    if (index < 0) return;
+
+    // ── Все цитаты закончились ──
+    if (index < 0) {
+        quoteText.textContent = 'Все цитаты открыты. Возвращайся позже.';
+        trackName.hidden = true;
+        albumName.hidden = true;
+        featsEl.hidden = true;
+        secretMark.hidden = true;
+        coverImg.hidden = true;
+        listenLink.href = '#';
+        listenLink.style.display = 'none';
+        card.hidden = false;
+        card.classList.remove('dropping');
+        void card.offsetWidth;
+        card.classList.add('dropping');
+        return;
+    }
+
+    // Сбрасываем скрытие ссылки, если до этого была показана заглушка
+    listenLink.style.display = '';
 
     seenState.indices.push(index);
     saveSeen(seenState);
     limitState.count += 1;
     saveLimitState(limitState);
     updateCounter();
+    checkAchievements();
 
     const quote = getQuote(index);
     const isSecret = index >= quotes.length;
@@ -1745,6 +1972,41 @@ function plural(n, one, few, many) {
     return many;
 }
 
+function renderAchievementsBar() {
+    const existing = document.querySelector('.achievements-bar');
+    if (existing) existing.remove();
+
+    const total = Object.keys(achievements).length;
+    const unlocked = Object.keys(achievements).filter(k => unlockedAchievements[k]).length;
+
+    const bar = document.createElement('div');
+    bar.className = 'achievements-bar';
+
+    let html = `<span class="ach-title">Достижения ${unlocked}/${total}</span>`;
+
+    for (const [key, ach] of Object.entries(achievements)) {
+        const isUnlocked = !!unlockedAchievements[key];
+        const cls = isUnlocked ? 'unlocked' : 'locked';
+        const icon = isUnlocked
+            ? `<svg class="ach-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                   <path d="M12 2l2.6 6.2 6.7.5-5.1 4.4 1.6 6.5L12 16.9 6.2 19.6l1.6-6.5-5.1-4.4 6.7-.5L12 2z"
+                         stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+               </svg>`
+            : `<svg class="ach-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                   <path d="M4 7V5a4 4 0 118 0v2M3 7h10v7H3z"
+                         stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+               </svg>`;
+        html += `<span class="ach-badge ${cls}" title="${esc(ach.desc)}">${icon}${esc(ach.name)}</span>`;
+    }
+
+    bar.innerHTML = html;
+
+    // Вставляем в модалку перед .modal-body
+    const modalBox = document.querySelector('.modal-box');
+    const body = document.querySelector('#catalog-body');
+    modalBox.insertBefore(bar, body);
+}
+
 function renderCatalog(filter = '') {
     const catalog = buildCatalog();
     const q = filter.trim().toLowerCase();
@@ -1764,7 +2026,7 @@ function renderCatalog(filter = '') {
             const hay = (meta.title + ' ' + meta.feats.join(' ') + ' ' + meta.main).toLowerCase();
             const albumHay = title.toLowerCase();
             const trackMatches = !q || hay.includes(q) || albumHay.includes(q);
-            const matchedIndices = indices.filter(i => !q || trackMatches || quotes[i].text.toLowerCase().includes(q));
+            const matchedIndices = indices.filter(i => !q || trackMatches || getQuote(i).text.toLowerCase().includes(q));
             if (matchedIndices.length === 0) continue;
             matchedTracks.set(track, matchedIndices);
             totalQuotes += matchedIndices.length;
@@ -1897,8 +2159,9 @@ function hydrateCatalogCovers() {
             if (el.classList.contains('album-cover-wrap')) {
                 const albumKey = el.dataset.coverAlbum;
                 if (!albumKey) continue;
-                const first = quotes.find(q => q.album === albumKey);
-                if (!first) continue;
+                const first = quotes.find(q => q.album === albumKey)
+					|| secretQuotes.find(q => q.album === albumKey);
+				if (!first) continue;
                 resolveCover(first).then(url => {
                     if (!url) return;
                     const img = document.createElement('img');
@@ -1922,9 +2185,11 @@ function hydrateCatalogCovers() {
 function openCatalog() {
     openAlbumKey = null;
     renderCatalog('');
+    renderAchievementsBar();
     catalogSearch.value = '';
     catalogModal.hidden = false;
     document.body.style.overflow = 'hidden';
+    checkAchievements();
 }
 function closeCatalog() {
     catalogModal.hidden = true;
@@ -1947,6 +2212,7 @@ function checkDayChange() {
         limitState = { date: today, count: 0 };
         saveLimitState(limitState);
     }
+    updateCounter();
 }
 setInterval(checkDayChange, 60 * 1000);
 
