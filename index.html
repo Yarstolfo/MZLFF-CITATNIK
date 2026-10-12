@@ -1318,10 +1318,48 @@ const TRACK_INFO = {
     // очередь: не более одного запроса за раз, чтобы не ловить лимиты API
     let liveQueue = Promise.resolve();
     const inflight = {};
+    // --- локальные обложки из папки covers/ (лежат рядом с html в репозитории) ---
+    const LOCAL_DIR  = 'covers/';
+    const LOCAL_EXTS = ['png', 'jpg', 'jpeg', 'webp'];
+    const localCache = {};
+
+    function probeImg(url) {
+        return new Promise(resolve => {
+            const im = new Image();
+            im.onload = () => resolve(true);
+            im.onerror = () => resolve(false);
+            im.src = url;
+        });
+    }
+
+    // сначала путь из COVERS (если он локальный), потом covers/<ключ>.<png|jpg|jpeg|webp>
+    function localCover(key) {
+        if (key in localCache) return localCache[key];
+        const cands = [];
+        const known = COVERS[key];
+        if (known && !/^(https?:)?\/\//i.test(known)) cands.push(known);
+        for (const ext of LOCAL_EXTS) {
+            const p = LOCAL_DIR + key + '.' + ext;
+            if (!cands.includes(p)) cands.push(p);
+        }
+        return localCache[key] = (async () => {
+            for (const c of cands) if (await probeImg(c)) return c;
+            return '';
+        })();
+    }
+
+    // порядок: a.cover -> локальный файл из covers/ -> URL из COVERS / кэш / живой поиск
     function resolveCover(quote) {
         const key = quote.album;
         const a = albums[key] || {};
-        const known = a.cover || COVERS[key] || coverCache[key];
+        if (a.cover) return Promise.resolve(a.cover);
+        return localCover(key).then(local => local || resolveRemoteCover(quote));
+    }
+
+    function resolveRemoteCover(quote) {
+        const key = quote.album;
+        const a = albums[key] || {};
+        const known = (/^(https?:)?\/\//i.test(COVERS[key] || '') ? COVERS[key] : '') || coverCache[key];
         if (known) return Promise.resolve(known);
         if (coverCache[key] === '') return Promise.resolve('');
         if (inflight[key]) return inflight[key];
