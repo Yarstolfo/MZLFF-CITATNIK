@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080a09">
-<title>Моя цитата — строчки, которые остаются</title>
+<title>Цитатник Илюхи Мазеллова</title>
 <style>
 :root {
     color-scheme: dark;
@@ -160,7 +160,7 @@ header {
     font-size: 10px;
     font-weight: 600;
     letter-spacing: .04em;
-}	
+}
 
 .catalog-btn {
     display: inline-flex;
@@ -357,6 +357,19 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
 }
 .counter strong { color: var(--paper); }
 .counter.limit  { color: #ff6b6b; }
+
+.reset-timer {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+.reset-timer strong {
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+}
 
 .modal {
     position: fixed;
@@ -705,6 +718,7 @@ button .arrow svg { display: block; width: 100%; height: 100%; }
             </span>
         </button>
         <p class="counter" id="counter"></p>
+        <p class="reset-timer" id="reset-timer"></p>
         <section class="quote-card" id="quote-card" aria-live="polite" aria-atomic="true" hidden>
             <p class="quote-text" id="quote-text"></p>
             <img class="card-cover" id="cover-img" alt="" hidden referrerpolicy="no-referrer">
@@ -765,6 +779,7 @@ function saveAchievements(s) {
 }
 
 let unlockedAchievements = loadAchievements();
+
 // ==========================================
 // АЛЬБОМЫ
 // ==========================================
@@ -828,9 +843,6 @@ const albums = {
     secret:          { title: 'Вне дискографии', url: '#' },
 };
 
-// ==========================================
-// ЦИТАТЫ
-// ==========================================
 const quotes = [
 		{ track: '1212', album: 'ADHD', text: 'Ради себя, не люда, во имя медали, хули? Чтоб стрельнуть, мэйби, но я не видал их пуль.' },
 		{ track: '1212', album: 'ADHD', text: 'Если чё-то делать, то делать на пять с плюсом.' },
@@ -1790,6 +1802,7 @@ const trackName    = document.querySelector('#track-name');
 const albumName    = document.querySelector('#album-name');
 const listenLink   = document.querySelector('#listen-link');
 const counterEl    = document.querySelector('#counter');
+const resetTimerEl = document.querySelector('#reset-timer');
 const coverImg     = document.querySelector('#cover-img');
 const featsEl      = document.querySelector('#feats');
 const secretMark   = document.querySelector('#secret-mark');
@@ -1817,6 +1830,36 @@ function updateCounter() {
 }
 
 // ==========================================
+// ТАЙМЕР ДО ОБНОВЛЕНИЯ (до полуночи)
+// ==========================================
+function msUntilReset() {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    return next - now;
+}
+
+function updateResetTimer() {
+    const ms = msUntilReset();
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+
+    const pad = n => String(n).padStart(2, '0');
+
+    if (totalSec <= 0) {
+        resetTimerEl.innerHTML = 'Обновление…';
+    } else {
+        resetTimerEl.innerHTML =
+            `Обновление через <strong>${pad(h)}:${pad(m)}:${pad(s)}</strong>`;
+    }
+}
+
+setInterval(updateResetTimer, 1000);
+updateResetTimer();
+
+// ==========================================
 // ВЫБОР ЦИТАТЫ (обычные + тайные)
 // ==========================================
 const SECRET_CHANCE = 0.10; // 10% шанс, что попадётся тайная
@@ -1829,14 +1872,12 @@ function getQuote(globalIndex) {
 function pickQuoteIndex() {
     const secretOffset = quotes.length;
 
-    // ── Собираем НЕоткрытые обычные ──
     const usedRegular = new Set(seenState.indices.filter(i => i < secretOffset));
     const availableRegular = [];
     for (let i = 0; i < quotes.length; i++) {
         if (!usedRegular.has(i)) availableRegular.push(i);
     }
 
-    // ── Собираем НЕоткрытые тайные ──
     const usedSecret = new Set(seenState.indices.filter(i => i >= secretOffset));
     const availableSecret = [];
     for (let i = 0; i < secretQuotes.length; i++) {
@@ -1844,20 +1885,16 @@ function pickQuoteIndex() {
         if (!usedSecret.has(g)) availableSecret.push(g);
     }
 
-    // ── Если ВСЁ кончилось — возвращаем -1 ──
     if (availableRegular.length === 0 && availableSecret.length === 0) return -1;
 
-    // ── Тайные: если ещё есть И повезло ──
     if (availableSecret.length > 0 && Math.random() < SECRET_CHANCE) {
         return availableSecret[Math.floor(Math.random() * availableSecret.length)];
     }
 
-    // ── Обычные: если ещё есть ──
     if (availableRegular.length > 0) {
         return availableRegular[Math.floor(Math.random() * availableRegular.length)];
     }
 
-    // ── Обычных нет — отдаём тайную ──
     return availableSecret[Math.floor(Math.random() * availableSecret.length)];
 }
 
@@ -1865,10 +1902,26 @@ function pickQuoteIndex() {
 // ПОКАЗ ЦИТАТЫ
 // ==========================================
 button.addEventListener('click', () => {
-    if (limitState.count >= DAILY_LIMIT) return;
+    // Лимит исчерпан
+    if (limitState.count >= DAILY_LIMIT) {
+        quoteText.textContent = 'Лимит на сегодня исчерпан. Возвращайся после обновления.';
+        trackName.hidden = true;
+        albumName.hidden = true;
+        featsEl.hidden = true;
+        secretMark.hidden = true;
+        coverImg.hidden = true;
+        listenLink.href = '#';
+        listenLink.style.display = 'none';
+        card.hidden = false;
+        card.classList.remove('dropping');
+        void card.offsetWidth;
+        card.classList.add('dropping');
+        return;
+    }
+
     const index = pickQuoteIndex();
 
-    // ── Все цитаты закончились ──
+    // Все цитаты закончились
     if (index < 0) {
         quoteText.textContent = 'Все цитаты открыты. Возвращайся позже.';
         trackName.hidden = true;
@@ -1885,7 +1938,6 @@ button.addEventListener('click', () => {
         return;
     }
 
-    // Сбрасываем скрытие ссылки, если до этого была показана заглушка
     listenLink.style.display = '';
 
     seenState.indices.push(index);
@@ -1925,7 +1977,9 @@ button.addEventListener('click', () => {
     secretMark.hidden = !isSecret;
 
     coverImg.hidden = true;
-    resolveCover(quote).then(url => { if (trackName.textContent === meta.title || sameName) setImg(coverImg, url); });
+    resolveCover(quote).then(url => {
+        if (trackName.textContent === meta.title || sameName) setImg(coverImg, url);
+    });
 
     card.hidden = false;
     card.classList.remove('dropping');
@@ -1941,7 +1995,6 @@ let openAlbumKey = null;
 function buildCatalog() {
     const map = new Map();
 
-    // Обычные
     quotes.forEach((quote, i) => {
         if (!map.has(quote.album)) map.set(quote.album, new Map());
         const tracks = map.get(quote.album);
@@ -1949,7 +2002,6 @@ function buildCatalog() {
         tracks.get(quote.track).push(i);
     });
 
-    // Тайные — тоже показываем, со смещением индексов
     secretQuotes.forEach((quote, i) => {
         const globalIdx = quotes.length + i;
         if (!map.has(quote.album)) map.set(quote.album, new Map());
@@ -2001,7 +2053,6 @@ function renderAchievementsBar() {
 
     bar.innerHTML = html;
 
-    // Вставляем в модалку перед .modal-body
     const modalBox = document.querySelector('.modal-box');
     const body = document.querySelector('#catalog-body');
     modalBox.insertBefore(bar, body);
@@ -2160,8 +2211,8 @@ function hydrateCatalogCovers() {
                 const albumKey = el.dataset.coverAlbum;
                 if (!albumKey) continue;
                 const first = quotes.find(q => q.album === albumKey)
-					|| secretQuotes.find(q => q.album === albumKey);
-				if (!first) continue;
+                    || secretQuotes.find(q => q.album === albumKey);
+                if (!first) continue;
                 resolveCover(first).then(url => {
                     if (!url) return;
                     const img = document.createElement('img');
@@ -2218,6 +2269,7 @@ setInterval(checkDayChange, 60 * 1000);
 
 checkDayChange();
 updateCounter();
+updateResetTimer();
 </script>
 </body>
 </html>
