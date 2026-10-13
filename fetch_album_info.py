@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 fetch_album_info.py — собирает короткую справку об альбомах/синглах с Genius
-(дата выхода, число треков, описание) и вставляет её в index.html.
+(дата выхода, число треков, описание) и записывает её в album_info.js (подключается в index.html).
 
 Токен берётся ТОЛЬКО из переменной окружения (не пиши его в файл):
     export GENIUS_TOKEN='...'      (Linux/Mac)
@@ -20,11 +20,10 @@ fetch_album_info.py — собирает короткую справку об а
                                                        # проверить вытаскивание текста с одной страницы
 
 Что делает:
-  * читает из HTML список альбомов (const albums) и треков (const quotes);
+  * читает список альбомов (const albums в index.html) и треков (const quotes в quotes.js);
   * для каждого альбома ищет его на Genius (через песни, как в fetch_covers.py);
   * для синглов и фитов берёт данные самой песни;
-  * пишет album_info.json и подставляет `const ALBUM_INFO = {...}` в HTML между
-    маркерами /*ALBUMINFO:START*/ ... /*ALBUMINFO:END*/.
+  * пишет album_info.json и пишет `const ALBUM_INFO = {...}` в album_info.js.
 
 Ручные правки: в album_info.json добавь у записи "manual": true — скрипт её не тронет.
 Описание (блок «About») API Genius для альбомов почти всегда отдаёт пустым, поэтому текст
@@ -520,15 +519,13 @@ def collect(albums, tracks, existing, only=None, refresh=False):
 
 
 # ------------------------------------------------------------------ вставка в HTML
-def patch_html(html, info):
-    block = ('/*ALBUMINFO:START*/\n'
-             'const ALBUM_INFO = ' + json.dumps(info, ensure_ascii=False, indent=4) + ';\n'
-             '/*ALBUMINFO:END*/')
-    new, n = re.subn(r'/\*ALBUMINFO:START\*/.*?/\*ALBUMINFO:END\*/',
-                     lambda m: block, html, flags=re.S)
-    if n != 1:
-        sys.exit('ERROR: не нашёл маркеры /*ALBUMINFO:START*/ ... /*ALBUMINFO:END*/ в HTML')
-    return new
+def patch_html(info):
+    """Содержимое album_info.js (подключается в index.html перед основным скриптом)."""
+    return ('// Информация об альбомах (дата, описание, ссылка). Генерируется fetch_album_info.py\n'
+            '// из album_info.json; можно править руками.\n'
+            '/*ALBUMINFO:START*/\n'
+            'const ALBUM_INFO = ' + json.dumps(info, ensure_ascii=False, indent=4) + ';\n'
+            '/*ALBUMINFO:END*/\n')
 
 
 # ------------------------------------------------------------------ main
@@ -561,7 +558,8 @@ def main():
     if not html_path.exists():
         sys.exit(f'ERROR: файл не найден: {a.html}')
     html = html_path.read_text('utf-8')
-    albums, tracks = read_project(html)
+    qjs = html_path.parent / 'quotes.js'
+    albums, tracks = read_project(html + ('\n' + qjs.read_text('utf-8') if qjs.exists() else ''))
 
     if a.debug:
         print(f'Альбомов: {len(albums)}')
@@ -613,7 +611,7 @@ def main():
     info = collect(albums, tracks, existing, only, a.refresh)
 
     json_path.write_text(json.dumps(info, ensure_ascii=False, indent=2), 'utf-8')
-    html_path.write_text(patch_html(html, info), 'utf-8')
+    (html_path.parent / 'album_info.js').write_text(patch_html(info), 'utf-8')
 
     print('\n✅ ГОТОВО')
     print(f'   справок: {len(info)}')
